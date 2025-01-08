@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사용자 등록</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="signup.css" rel="stylesheet">
+</head>
+<body class="bg-primary text-light">
+    <div class="container vh-100 d-flex flex-column justify-content-center align-items-center">
+        <div class="text-center mb-4">
+            <h1 id="system-title" class="text-light">대림통상 내부회계시스템</h1>
+        </div>
+        <div class="card p-4 bg-light text-dark shadow-lg" style="max-width: 500px; width: 100%;">
+            <h2 class="text-center text-primary">사용자 등록</h2>
+            <form id="signupForm" action="/loginController/signup" method="post">
+                <!-- 아이디 입력 -->
+                <div class="mb-3">
+                    <label for="id" class="form-label">아이디:</label>
+                    <div class="input-group">
+                        <input type="text" id="id" name="id" class="form-control" required>
+                        <button type="button" class="btn btn-outline-primary" onclick="checkId()">중복확인</button>
+                    </div>
+                    <span id="checkIdResult" class="text-danger"></span>
+                </div>
+                <!-- 비밀번호 입력 -->
+                <div class="mb-3">
+                    <label for="password" class="form-label">비밀번호:</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                </div>
+                <!-- 사용자 등록 버튼 -->
+                <button type="submit" class="btn btn-primary w-100" disabled id="signupButton">사용자 등록</button>
+            </form>
+            <!-- 세션 에러 메시지 표시 -->
+			<p class="text-danger mt-3 text-center" th:if="${error}" th:text="${error}"></p>
+        </div>
+    </div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" defer></script>
+    <!-- Custom JavaScript -->
+    <script src="/signupScript.js" defer></script>
+</body>
+</html>

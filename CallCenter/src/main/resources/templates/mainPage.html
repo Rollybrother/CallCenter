@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>콜센터 통계</title>
+    <link rel="stylesheet" href="/mainPage.css">
+</head>
+<body>
+    <header>
+        <h1>콜센터 통계</h1>
+        <div class="button-group">
+            <button id="registerBtn">통계 등록</button>
+            <button id="dailyBtn">일별 조회</button>
+            <button id="monthlyBtn">월별 조회</button>
+            <button id="yearlyBtn">연별 조회</button>
+        </div>
+    </header>
+    <main>
+        <div id="filter-section">
+            <!-- 조회 필터 입력 영역 (예: 날짜, 월, 연도 선택) -->
+        </div>
+        <div id="data-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th rowspan="2">날짜</th>
+                        <th colspan="4">상담원</th>
+                        <th colspan="2">보이스봇</th>
+                        <th colspan="2">챗봇</th>
+                        <th rowspan="2">온라인 접수</th>
+                        <th rowspan="2">건설사 접수</th>
+                        <th rowspan="2">내선콜 접수</th>
+                        <th colspan="5">합계</th>
+                    </tr>
+                    <tr>
+                        <!-- 세부 헤더 -->
+                        <th>인입</th>
+                        <th>응답</th>
+                        <th>응대율</th>
+                        <th>접수</th>
+                        <th>인입</th>
+                        <th>접수</th>
+                        <th>인입</th>
+                        <th>접수</th>
+                        <th>인입</th>
+                        <th>응대</th>
+                        <th>응대율</th>
+                        <th>접수</th>
+                        <th>응대접수율</th>
+                    </tr>
+                </thead>
+                <tbody id="data-body">
+                    <!-- 조회된 데이터가 여기에 추가됩니다 -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+	<!-- 모달 창 -->
+	<div id="modal" class="modal hidden">
+	    <div class="modal-content">
+	        <h2>통계 등록</h2>
+	        <form id="statForm">
+	            <label>날짜: <input type="date" id="date" name="date" required></label>
+	            <!-- 접수 데이터 조회 버튼 추가 -->
+	            <button type="button" id="fetchReceptionBtn">접수 데이터 조회</button>
+	            <label>상담원 인입: <input type="number" id="manInCall" name="manInCall" required></label>
+	            <label>상담원 응답: <input type="number" id="manResCall" name="manResCall" required></label>
+	            <label>상담원 접수: <input type="number" id="manAcptCall" name="manAcptCall" required></label>
+	            <label>보이스봇 인입: <input type="number" id="voiceInCall" name="voiceInCall" required></label>
+	            <label>보이스봇 접수: <input type="number" id="voiceAcptCall" name="voiceAcptCall" required></label>
+	            <label>챗봇 인입: <input type="number" id="chatInCall" name="chatInCall" required></label>
+	            <label>챗봇 접수: <input type="number" id="chatAcptCall" name="chatAcptCall" required></label>
+	            <label>온라인 접수: <input type="number" id="onlineAcptCall" name="onlineAcptCall" required></label>
+	            <label>건설사 접수: <input type="number" id="firmAcptCall" name="firmAcptCall" required></label>
+	            <label>내선콜 접수: <input type="number" id="innerAcptCall" name="innerAcptCall" required></label>
+	            <button type="submit">저장</button>
+	            <button type="button" id="closeModal">닫기</button>
+	        </form>
+	    </div>
+	</div>
+	
+	
+    <script src="/mainPage.js"></script>
+	<script src="/mainPage2.js"></script>
+	
+</body>
+</html>
