@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("monthlyBtn").addEventListener("click", showMonthlyFilter);
     document.getElementById("yearlyBtn").addEventListener("click", showYearlyFilter);
 	
+	window.calculateAndRenderTotalRow = calculateAndRenderTotalRow;
     function showDailyFilter() {
         const filterSection = document.getElementById("filter-section");
         filterSection.innerHTML = `
