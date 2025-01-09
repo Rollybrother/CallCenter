@@ -246,7 +246,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	            const url = window.URL.createObjectURL(blob);
 	            const a = document.createElement("a");
 	            a.href = url;
-	            a.download = "콜센터_통계.xlsx";
+	            a.download = "조회결과.xlsx";
 	            document.body.appendChild(a);
 	            a.click();
 	            a.remove();

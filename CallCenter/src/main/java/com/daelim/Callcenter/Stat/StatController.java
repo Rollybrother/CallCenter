@@ -36,51 +36,65 @@ public class StatController {
     }
     
     @PostMapping("/excelDownload")
-    public void downloadExcel(@RequestBody List<Map<String, String>> tableData, HttpServletResponse response) throws IOException {
-        // 첨부된 엑셀 파일 경로
+    public void downloadExcel(@RequestBody List<Map<String, String>> tableData, HttpServletResponse response) throws Exception {
+        // 템플릿 파일 경로
         String templatePath = "src/main/resources/templates/조회결과.xlsx";
 
-        // 엑셀 템플릿 읽기
         try (FileInputStream fis = new FileInputStream(templatePath);
              Workbook workbook = new XSSFWorkbook(fis)) {
 
+            // 첫 번째 시트 가져오기
             Sheet sheet = workbook.getSheetAt(0);
 
-            // 3행부터 데이터 삽입
-            int rowNum = 2; // 엑셀에서 3행은 index 2
-            for (Map<String, String> rowData : tableData) {
-                Row row = sheet.createRow(rowNum++);
+            // 데이터 삽입 시작 행 (3행, 인덱스 2)
+            int rowNum = 2;
 
-                row.createCell(0).setCellValue(rowData.get("date"));
-                row.createCell(1).setCellValue(Integer.parseInt(rowData.get("manInCall")));
-                row.createCell(2).setCellValue(Integer.parseInt(rowData.get("manResCall")));
-                row.createCell(3).setCellValue(rowData.get("manResRate"));
-                row.createCell(4).setCellValue(Integer.parseInt(rowData.get("manAcptCall")));
-                row.createCell(5).setCellValue(Integer.parseInt(rowData.get("voiceInCall")));
-                row.createCell(6).setCellValue(Integer.parseInt(rowData.get("voiceAcptCall")));
-                row.createCell(7).setCellValue(Integer.parseInt(rowData.get("chatInCall")));
-                row.createCell(8).setCellValue(Integer.parseInt(rowData.get("chatAcptCall")));
-                row.createCell(9).setCellValue(Integer.parseInt(rowData.get("onlineAcptCall")));
-                row.createCell(10).setCellValue(Integer.parseInt(rowData.get("firmAcptCall")));
-                row.createCell(11).setCellValue(Integer.parseInt(rowData.get("innerAcptCall")));
-                row.createCell(12).setCellValue(Integer.parseInt(rowData.get("totalInCall")));
-                row.createCell(13).setCellValue(Integer.parseInt(rowData.get("totalResCall")));
-                row.createCell(14).setCellValue(rowData.get("totalResRate"));
-                row.createCell(15).setCellValue(Integer.parseInt(rowData.get("totalAcptCall")));
-                row.createCell(16).setCellValue(rowData.get("totalAcptRate"));
+            for (Map<String, String> rowData : tableData) {
+                // 기존 행 가져오기 (없으면 새로 생성)
+                Row row = sheet.getRow(rowNum);
+                if (row == null) {
+                    row = sheet.createRow(rowNum);
+                }
+                rowNum++;
+
+                // 기존 셀에 데이터 삽입
+                setCellValue(row, 0, rowData.get("date")); // 날짜
+                setCellValue(row, 1, rowData.get("manInCall")); // 상담원 인입
+                setCellValue(row, 2, rowData.get("manResCall")); // 상담원 응답
+                setCellValue(row, 3, rowData.get("manResRate")); // 상담원 응대율
+                setCellValue(row, 4, rowData.get("manAcptCall")); // 상담원 접수
+                setCellValue(row, 5, rowData.get("voiceInCall")); // 보이스봇 인입
+                setCellValue(row, 6, rowData.get("voiceAcptCall")); // 보이스봇 접수
+                setCellValue(row, 7, rowData.get("chatInCall")); // 챗봇 인입
+                setCellValue(row, 8, rowData.get("chatAcptCall")); // 챗봇 접수
+                setCellValue(row, 9, rowData.get("onlineAcptCall")); // 온라인 접수
+                setCellValue(row, 10, rowData.get("firmAcptCall")); // 건설사 접수
+                setCellValue(row, 11, rowData.get("innerAcptCall")); // 내선콜 접수
+                setCellValue(row, 12, rowData.get("totalInCall")); // 총 인입
+                setCellValue(row, 13, rowData.get("totalResCall")); // 총 응답
+                setCellValue(row, 14, rowData.get("totalResRate")); // 총 응대율
+                setCellValue(row, 15, rowData.get("totalAcptCall")); // 총 접수
+                setCellValue(row, 16, rowData.get("totalAcptRate")); // 총 응대 접수율
             }
 
-            // 파일명 설정 및 응답 준비
-            String fileName = "콜센터_통계.xlsx";
+            // 응답 설정
+            String fileName = "조회결과.xlsx";
             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
 
-            // 엑셀 파일을 클라이언트에 출력
             try (OutputStream os = response.getOutputStream()) {
                 workbook.write(os);
-                os.flush();
             }
         }
+    }
+
+    // 셀 값을 설정하는 메서드 (기존 셀 유지)
+    private void setCellValue(Row row, int cellIndex, String value) {
+        Cell cell = row.getCell(cellIndex);
+        if (cell == null) {
+            cell = row.createCell(cellIndex);
+        }
+        cell.setCellValue(value);
     }
     
     @GetMapping("/daily")
