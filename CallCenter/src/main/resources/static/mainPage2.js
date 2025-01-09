@@ -197,14 +197,69 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
     });
-
-    // "엑셀 다운로드" 버튼 클릭 이벤트 (기능 없음)
-    excelDownloadButton.addEventListener("click", function () {
-        alert("엑셀 다운로드 기능은 아직 구현되지 않았습니다.");
-    });
-
+	
+    // 엑셀 다운로드 버튼 클릭 이벤트
+	excelDownloadButton.addEventListener("click", function () {
+	    // 테이블 데이터를 수집
+	    const tableData = [];
+	    const rows = document.querySelectorAll("#data-body tr");
+	
+	    rows.forEach((row) => {
+	        const cells = row.querySelectorAll("td");
+	        const rowData = {
+	            date: cells[0].textContent.trim(),
+	            manInCall: parseInt(cells[1].textContent.trim()) || 0,
+	            manResCall: parseInt(cells[2].textContent.trim()) || 0,
+	            manResRate: cells[3].textContent.trim(), // 문자열(%) 포함
+	            manAcptCall: parseInt(cells[4].textContent.trim()) || 0,
+	            voiceInCall: parseInt(cells[5].textContent.trim()) || 0,
+	            voiceAcptCall: parseInt(cells[6].textContent.trim()) || 0,
+	            chatInCall: parseInt(cells[7].textContent.trim()) || 0,
+	            chatAcptCall: parseInt(cells[8].textContent.trim()) || 0,
+	            onlineAcptCall: parseInt(cells[9].textContent.trim()) || 0,
+	            firmAcptCall: parseInt(cells[10].textContent.trim()) || 0,
+	            innerAcptCall: parseInt(cells[11].textContent.trim()) || 0,
+	            totalInCall: parseInt(cells[12].textContent.trim()) || 0,
+	            totalResCall: parseInt(cells[13].textContent.trim()) || 0,
+	            totalResRate: cells[14].textContent.trim(), // 문자열(%) 포함
+	            totalAcptCall: parseInt(cells[15].textContent.trim()) || 0,
+	            totalAcptRate: cells[16].textContent.trim(), // 문자열(%) 포함
+	        };
+	        tableData.push(rowData);
+	    });
+	
+	    // 서버로 데이터 전송
+	    fetch("/api/statistics/excelDownload", {
+	        method: "POST",
+	        headers: {
+	            "Content-Type": "application/json",
+	        },
+	        body: JSON.stringify(tableData),
+	    })
+	        .then((response) => {
+	            if (!response.ok) {
+	                throw new Error("엑셀 다운로드에 실패했습니다.");
+	            }
+	            return response.blob();
+	        })
+	        .then((blob) => {
+	            const url = window.URL.createObjectURL(blob);
+	            const a = document.createElement("a");
+	            a.href = url;
+	            a.download = "콜센터_통계.xlsx";
+	            document.body.appendChild(a);
+	            a.click();
+	            a.remove();
+	        })
+	        .catch((error) => {
+	            console.error("Error:", error);
+	            alert("엑셀 다운로드 중 오류가 발생했습니다.");
+	        });
+	});
+	
     // "그래프 생성" 버튼 클릭 이벤트 (기능 없음)
     graphButton.addEventListener("click", function () {
-        alert("그래프 생성 기능은 아직 구현되지 않았습니다.");
+        
     });
+    
 });

@@ -287,7 +287,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	//등록 로직
     document.getElementById("statForm").addEventListener("submit", function(event) {
     event.preventDefault();
-
+	
     const formData = new FormData(event.target);
     const jsonData = Object.fromEntries(formData.entries());
 
