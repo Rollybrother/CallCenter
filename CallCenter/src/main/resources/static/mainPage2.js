@@ -257,9 +257,163 @@ document.addEventListener("DOMContentLoaded", function () {
 	        });
 	});
 	
-    // "그래프 생성" 버튼 클릭 이벤트 (기능 없음)
+    // "그래프 생성" 버튼 클릭 이벤트
     graphButton.addEventListener("click", function () {
-        
+        generateGraph(); // 그래프 생성 함수 호출
     });
+
+    // 그래프 모달 요소들
+    const graphModal = document.getElementById("graphModal");
+    const closeGraphModal = document.getElementById("closeGraphModal");
+    const printGraphBtn = document.getElementById("printGraphBtn");
+
+    // 모달 닫기 버튼 이벤트 추가
+    closeGraphModal.addEventListener("click", function () {
+        graphModal.classList.add("hidden");
+    });
+
+    // "그래프 인쇄" 버튼 클릭 이벤트 추가
+    printGraphBtn.addEventListener("click", function () {
+        printGraph(); // 그래프 인쇄 함수 호출
+    });
+
+    // 그래프 생성 함수 (수정된 부분)
+    function generateGraph() {
+        const tbody = document.getElementById("data-body");
+        const rows = Array.from(tbody.querySelectorAll("tr"));
+        const validRows = rows.slice(0, -1); // 마지막 행(합계 행)을 제외
+
+        const labels = [];
+        const totalInCall = [];
+        const totalResCall = [];
+        const totalAcptCall = [];
+
+        // 데이터 수집 (수정된 부분: 마지막 행 제외)
+        validRows.forEach(row => {
+            const dateCell = row.querySelector("td");
+            if (!dateCell) return;
+
+            const date = dateCell.textContent.trim();
+            const inCall = parseInt(row.children[12].textContent) || 0;
+            const resCall = parseInt(row.children[13].textContent) || 0;
+            const acptCall = parseInt(row.children[15].textContent) || 0;
+
+            labels.push(date);
+            totalInCall.push(inCall);
+            totalResCall.push(resCall);
+            totalAcptCall.push(acptCall);
+        });
+
+        const ctx = document.getElementById("lineGraph").getContext("2d");
+
+        // 기존 그래프 제거
+        if (window.lineChart) {
+            window.lineChart.destroy();
+        }
+
+        // 새로운 선형 그래프 생성
+        window.lineChart = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: "총 인입",
+                        data: totalInCall,
+                        borderColor: "blue",
+                        fill: false,
+                    },
+                    {
+                        label: "총 응대",
+                        data: totalResCall,
+                        borderColor: "green",
+                        fill: false,
+                    },
+                    {
+                        label: "총 접수",
+                        data: totalAcptCall,
+                        borderColor: "red",
+                        fill: false,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // 고정 크기에 맞춤 (수정된 부분)
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                const label = context.dataset.label || "";
+                                return `${label}: ${context.raw}`;
+                            },
+                        },
+                    },
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: "날짜",
+                        },
+                        ticks: {
+                            maxRotation: 0, // 축 레이블이 너무 길어질 경우 회전 방지 (수정된 부분)
+                            callback: function (val, index) {
+                                // 데이터가 많을 경우 일정 간격으로 레이블 표시 (수정된 부분)
+                                return index % Math.ceil(labels.length / 10) === 0
+                                    ? this.getLabelForValue(val)
+                                    : "";
+                            },
+                        },
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: "건수",
+                        },
+                        beginAtZero: true,
+                    },
+                },
+            },
+        });
+
+        graphModal.classList.remove("hidden"); // 모달 창 표시
+    }
+
+    // 그래프 인쇄 함수 (수정된 부분)
+    function printGraph() {
+        const printWindow = window.open('', '_blank');
+        const graphDataURL = document.getElementById("lineGraph").toDataURL();
+
+        printWindow.document.write(`
+            <html>
+            <head>
+                <title>그래프 인쇄</title>
+                <style>
+                    body, html {
+                        margin: 0;
+                        padding: 0;
+                        text-align: center;
+                    }
+                    img {
+                        max-width: 100%;
+                        height: auto;
+                    }
+                </style>
+            </head>
+            <body>
+                <img src="${graphDataURL}" alt="그래프 이미지">
+                <script>
+                    window.onload = function() {
+                        window.print();
+                        window.onafterprint = function() { window.close(); }
+                    }
+                </script>
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+    }
+    
     
 });

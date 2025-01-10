@@ -383,6 +383,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.error("Error:", error);
                 alert("접수 데이터를 가져오는 중 오류가 발생했습니다.");
             });
+            
     });
     
     

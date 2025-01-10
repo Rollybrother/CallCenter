@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>콜센터 통계</title>
     <link rel="stylesheet" href="/mainPage.css">
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <header>
@@ -56,6 +57,16 @@
             </table>
         </div>
     </main>
+	
+	<!-- 그래프 표시용 모달 창 추가 -->
+    <div id="graphModal" class="hidden">
+        <div class="modal-content">
+            <span id="closeGraphModal" class="close-button">&times;</span>
+            <canvas id="lineGraph"></canvas>
+            <button id="printGraphBtn">그래프 인쇄</button>
+        </div>
+    </div>
+	
 	<!-- 모달 창 -->
 	<div id="modal" class="modal hidden">
 	    <div class="modal-content">
