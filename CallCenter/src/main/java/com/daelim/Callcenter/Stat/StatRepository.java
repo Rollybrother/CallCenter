@@ -22,21 +22,25 @@ public interface StatRepository extends JpaRepository<StatVO, Integer> {
 		       "SUM(s.voiceAcptCall), " +
 		       "SUM(s.chatInCall), " +
 		       "SUM(s.chatAcptCall), " +
+		       "SUM(s.chattingIn), " +
+		       "SUM(s.chattingAcpt), " +
+		       "SUM(s.privateIn), " +
 		       "SUM(s.onlineAcptCall), " +
-		       "SUM(s.firmAcptCall), " +
-		       "SUM(s.innerAcptCall)) " +
+		       "SUM(s.faxAcpt), " +
+		       "SUM(s.innerAcpt)) " + 
 		       "FROM StatVO s " +
 		       "WHERE s.date BETWEEN :start AND :end " +
 		       "GROUP BY SUBSTRING(s.date, 1, 6) " +
 		       "ORDER BY SUBSTRING(s.date, 1, 6) ASC, s.date ASC")
 	 List<MonthlyStat> findMonthlyStatsByYear(@Param("start") String start, @Param("end") String end);
 
+	 
 	 @Query("SELECT s FROM StatVO s WHERE s.date BETWEEN :startDate AND :endDate ORDER BY s.date ASC")
      List<StatVO> findByDateBetween(@Param("startDate") String startDate, @Param("endDate") String endDate);
 	 
 	 @Query("SELECT s FROM StatVO s WHERE s.date = :date ORDER BY s.date ASC")
 	 List<StatVO> findByDate(@Param("date") String date);
-
+	 
 	 @Query("DELETE FROM StatVO s WHERE s.date = :date") 
 	 @Modifying
 	 @Transactional

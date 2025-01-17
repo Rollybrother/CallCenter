@@ -25,13 +25,17 @@
             <table>
                 <thead>
                     <tr>
-                        <th rowspan="2">날짜</th>
+						<th rowspan="2">
+						    <input type="checkbox" id="selectAllCheckbox"> 날짜
+						</th>
                         <th colspan="4">상담원</th>
                         <th colspan="2">보이스봇</th>
                         <th colspan="2">챗봇</th>
+						<th colspan="2">채팅</th>
+						<th rowspan="2">개별인입</th>
                         <th rowspan="2">온라인 접수</th>
-                        <th rowspan="2">건설사 접수</th>
-                        <th rowspan="2">내선콜 접수</th>
+						<th rowspan="2">팩스 접수</th>
+						<th rowspan="2">내선콜 접수</th>
                         <th colspan="5">합계</th>
                     </tr>
                     <tr>
@@ -43,6 +47,8 @@
                         <th>인입</th>
                         <th>접수</th>
                         <th>인입</th>
+                        <th>접수</th>
+						<th>인입</th>
                         <th>접수</th>
                         <th>인입</th>
                         <th>응대</th>
@@ -56,16 +62,14 @@
                 </tbody>
             </table>
         </div>
+		
+		<!-- 그래프 표시 영역 -->
+		<div id="graphContainer" style="margin-top: 20px;">
+		    <canvas id="barGraph" style="height: 20cm;"></canvas>
+		</div>
+		
     </main>
 	
-	<!-- 그래프 표시용 모달 창 추가 -->
-    <div id="graphModal" class="hidden">
-        <div class="modal-content">
-            <span id="closeGraphModal" class="close-button">&times;</span>
-            <canvas id="lineGraph"></canvas>
-            <button id="printGraphBtn">그래프 인쇄</button>
-        </div>
-    </div>
 	
 	<!-- 모달 창 -->
 	<div id="modal" class="modal hidden">
@@ -82,10 +86,13 @@
 	            <label>보이스봇 접수: <input type="number" id="voiceAcptCall" name="voiceAcptCall" required></label>
 	            <label>챗봇 인입: <input type="number" id="chatInCall" name="chatInCall" required></label>
 	            <label>챗봇 접수: <input type="number" id="chatAcptCall" name="chatAcptCall" required></label>
+				<label>채팅 인입: <input type="number" id="chattingIn" name="chattingIn" required></label>
+				<label>채팅 접수: <input type="number" id="chattingAcpt" name="chattingAcpt" required></label>
+				<label>개별 인입: <input type="number" id="privateIn" name="privateIn" required></label>
 	            <label>온라인 접수: <input type="number" id="onlineAcptCall" name="onlineAcptCall" required></label>
-	            <label>건설사 접수: <input type="number" id="firmAcptCall" name="firmAcptCall" required></label>
-	            <label>내선콜 접수: <input type="number" id="innerAcptCall" name="innerAcptCall" required></label>
-	            <button type="submit">저장</button>
+				<label>팩스 접수: <input type="number" id="faxAcpt" name="faxAcpt" required></label>
+				<label>내선콜 접수: <input type="number" id="innerAcpt" name="innerAcpt" required></label>
+				<button type="submit">저장</button>
 	            <button type="button" id="closeModal">닫기</button>
 	        </form>
 	    </div>

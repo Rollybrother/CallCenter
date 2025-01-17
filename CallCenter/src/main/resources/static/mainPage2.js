@@ -25,13 +25,125 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // "그래프 생성" 버튼 생성
     const graphButton = document.createElement("button");
-    graphButton.id = "graphBtn";
+    graphButton.id = "generateGraphButton";
     graphButton.textContent = "그래프 생성";
     buttonGroup.appendChild(graphButton);
+
+    // "인쇄" 버튼 생성
+    const printButton = document.createElement("button");
+    printButton.id = "printBtn";
+    printButton.textContent = "인쇄";
+    buttonGroup.appendChild(printButton);
 
     // 버튼 그룹을 filter-section 아래에 추가
     filterSection.insertAdjacentElement("afterend", buttonGroup);
 
+    // "인쇄" 버튼 클릭 이벤트
+    printButton.addEventListener("click", function () {
+        printTableAndGraph(); // 테이블 인쇄 함수 호출
+    });
+
+    // 테이블 및 그래프 인쇄 함수
+	function printTableAndGraph() {
+	    // 체크된 행만 포함한 테이블 생성
+	    const table = document.querySelector("#data-table table").cloneNode(true);
+	    const thead = table.querySelector("thead");
+	    const tbody = table.querySelector("tbody");
+	
+	    // 체크박스가 체크된 행만 유지
+	    const rows = Array.from(tbody.querySelectorAll("tr"));
+	    rows.forEach(row => {
+	        const checkbox = row.querySelector("input[type='checkbox']");
+	        if (!checkbox || !checkbox.checked) {
+	            row.remove(); // 체크되지 않은 행 삭제
+	        }
+	    });
+	
+	    // 체크박스 제거 (날짜 열 포함)
+	    thead.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
+	        const cell = checkbox.closest("th"); // 체크박스가 있는 헤더 셀
+	        if (cell) {
+	            cell.textContent = cell.textContent.trim(); // 체크박스를 제거하고 남은 텍스트 유지
+	        }
+	    });
+	
+	    tbody.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
+	        const cell = checkbox.closest("td"); // 체크박스가 있는 데이터 셀
+	        if (cell) {
+	            cell.textContent = cell.textContent.trim(); // 체크박스를 제거하고 남은 텍스트(날짜) 유지
+	        }
+	    });
+	
+	    // 그래프 캔버스 복제
+	    const graphCanvas = document.getElementById("barGraph");
+	    const graphImage = graphCanvas ? graphCanvas.toDataURL() : null; // 그래프 이미지 데이터 URL 생성
+	
+	    // 새로운 창 열기
+	    const printWindow = window.open("", "_blank");
+	    printWindow.document.write(`
+	        <html>
+	        <head>
+	            <title>테이블 및 그래프 인쇄</title>
+	            <style>
+	                body {
+	                    font-family: Arial, sans-serif;
+	                    margin: 0;
+	                    padding: 20px;
+	                }
+	                table {
+	                    width: 100%;
+	                    border-collapse: collapse;
+	                    margin: 20px 0;
+	                    font-size: 10px; /* 글자 크기 줄임 */
+	                }
+	                th, td {
+	                    border: 1px solid #ddd;
+	                    padding: 4px; /* 셀 간격 줄임 */
+	                    text-align: center;
+	                }
+	                th {
+	                    background-color: #f4f4f4;
+	                    font-weight: bold;
+	                    white-space: nowrap; /* 텍스트가 한 줄에 유지되도록 설정 */
+	                }
+	                .page-break {
+	                    page-break-before: always; /* A4 한 장 추가 */
+	                }
+	                .graph-container {
+	                    text-align: center;
+	                    margin-top: 20px;
+	                }
+	                .graph-container img {
+	                    max-width: 100%;
+	                    height: auto;
+	                }
+	            </style>
+	        </head>
+	        <body>
+	            <h1 style="font-size: 16px; margin-bottom: 10px;">테이블 데이터</h1>
+	            ${table.outerHTML} <!-- 체크된 행만 포함된 테이블 -->
+	            ${graphImage ? `
+	            <div class="page-break"></div>
+	            <div class="graph-container">
+	                <h2>그래프</h2>
+	                <img src="${graphImage}" alt="그래프 이미지">
+	            </div>
+	            ` : ""}
+	            <script>
+	                window.onload = function() {
+	                    window.print(); // 인쇄 실행
+	                    window.onafterprint = function() { window.close(); } // 인쇄 후 창 닫기
+	                }
+	            </script>
+	        </body>
+	        </html>
+	    `);
+	
+	    printWindow.document.close(); // 문서 스트림 닫기
+	}
+
+
+    
     // "수정" 버튼 클릭 이벤트
     editButton.addEventListener("click", function () {
         const checkedRows = document.querySelectorAll("input[type='checkbox']:checked");
@@ -77,8 +189,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
 
                 if (Object.keys(updatedData).length === 0) {
-                    console.error("수정된 데이터가 없습니다.");
-                    alert("수정된 데이터가 없습니다. 다시 시도해주세요.");
+                    checkbox.disabled = false;
                     return;
                 }
 
@@ -108,22 +219,19 @@ document.addEventListener("DOMContentLoaded", function () {
                             const voiceAcptCall = parseInt(updatedData["voiceAcptCall"]);
                             const chatInCall = parseInt(updatedData["chatInCall"]);
                             const chatAcptCall = parseInt(updatedData["chatAcptCall"]);
+                            const chattingIn = parseInt(updatedData["chattingIn"]);
+                            const chattingAcpt = parseInt(updatedData["chattingAcpt"]);
+                            const privateIn = parseInt(updatedData["privateIn"]);
                             const onlineAcptCall = parseInt(updatedData["onlineAcptCall"]);
-                            const firmAcptCall = parseInt(updatedData["firmAcptCall"]);
-                            const innerAcptCall = parseInt(updatedData["innerAcptCall"]);
+                            const faxAcpt = parseInt(updatedData["faxAcpt"]);
+                            const innerAcpt = parseInt(updatedData["innerAcpt"]);
 
                             // 계산된 값
                             const manResRate = manInCall > 0 ? ((manResCall / manInCall) * 100).toFixed(1) : "0.0";
-                            const totalInCall = manInCall + voiceInCall + chatInCall;
-                            const totalResCall = manResCall + voiceInCall + chatInCall;
+                            const totalInCall = manInCall + voiceInCall + chatInCall + chattingIn;
+        					const totalResCall = manResCall + voiceInCall + chatInCall + chattingIn;
                             const totalResRate = totalInCall > 0 ? ((totalResCall / totalInCall) * 100).toFixed(1) : "0.0";
-                            const totalAcptCall =
-                                manAcptCall +
-                                voiceAcptCall +
-                                chatAcptCall +
-                                onlineAcptCall +
-                                firmAcptCall +
-                                innerAcptCall;
+                            const totalAcptCall = manAcptCall + voiceAcptCall + chatAcptCall + chattingAcpt + privateIn + onlineAcptCall + faxAcpt + innerAcpt;
                             const totalAcptRate = totalResCall > 0 ? ((totalAcptCall / totalResCall) * 100).toFixed(1) : "0.0";
 
                             // 테이블 업데이트
@@ -133,20 +241,23 @@ document.addEventListener("DOMContentLoaded", function () {
                                 </td>
                                 <td data-editable="true" data-field="manInCall">${manInCall}</td>
                                 <td data-editable="true" data-field="manResCall">${manResCall}</td>
-                                <td>${manResRate}%</td>
-                                <td data-editable="true" data-field="manAcptCall">${manAcptCall}</td>
-                                <td data-editable="true" data-field="voiceInCall">${voiceInCall}</td>
-                                <td data-editable="true" data-field="voiceAcptCall">${voiceAcptCall}</td>
-                                <td data-editable="true" data-field="chatInCall">${chatInCall}</td>
-                                <td data-editable="true" data-field="chatAcptCall">${chatAcptCall}</td>
-                                <td data-editable="true" data-field="onlineAcptCall">${onlineAcptCall}</td>
-                                <td data-editable="true" data-field="firmAcptCall">${firmAcptCall}</td>
-                                <td data-editable="true" data-field="innerAcptCall">${innerAcptCall}</td>
-                                <td>${totalInCall}</td>
-                                <td>${totalResCall}</td>
-                                <td>${totalResRate}%</td>
-                                <td>${totalAcptCall}</td>
-                                <td>${totalAcptRate}%</td>
+					        	<td>${manResRate}%</td>
+					        	<td data-editable="true" data-field="manAcptCall">${manAcptCall}</td>
+						        <td data-editable="true" data-field="voiceInCall">${voiceInCall}</td>
+						        <td data-editable="true" data-field="voiceAcptCall">${voiceAcptCall}</td>
+						        <td data-editable="true" data-field="chatInCall">${chatInCall}</td>
+						        <td data-editable="true" data-field="chatAcptCall">${chatAcptCall}</td>
+						        <td data-editable="true" data-field="chattingIn">${chattingIn}</td>
+						        <td data-editable="true" data-field="chattingAcpt">${chattingAcpt}</td>
+						        <td data-editable="true" data-field="privateIn">${privateIn}</td>
+						        <td data-editable="true" data-field="onlineAcptCall">${onlineAcptCall}</td>
+						        <td data-editable="true" data-field="faxAcpt">${faxAcpt}</td>
+						        <td data-editable="true" data-field="innerAcpt">${innerAcpt}</td>
+						        <td>${totalInCall}</td>
+						        <td>${totalResCall}</td>
+						        <td>${totalResRate}%</td>
+						        <td>${totalAcptCall}</td>
+						        <td>${totalAcptRate}%</td>
                             `;
 
                             // 기존 합계 행 제거 후 새로 추가
@@ -210,20 +321,23 @@ document.addEventListener("DOMContentLoaded", function () {
 	            date: cells[0].textContent.trim(),
 	            manInCall: parseInt(cells[1].textContent.trim()) || 0,
 	            manResCall: parseInt(cells[2].textContent.trim()) || 0,
-	            manResRate: cells[3].textContent.trim(), // 문자열(%) 포함
+	            manResRate: cells[3].textContent.trim(), 
 	            manAcptCall: parseInt(cells[4].textContent.trim()) || 0,
 	            voiceInCall: parseInt(cells[5].textContent.trim()) || 0,
 	            voiceAcptCall: parseInt(cells[6].textContent.trim()) || 0,
 	            chatInCall: parseInt(cells[7].textContent.trim()) || 0,
 	            chatAcptCall: parseInt(cells[8].textContent.trim()) || 0,
-	            onlineAcptCall: parseInt(cells[9].textContent.trim()) || 0,
-	            firmAcptCall: parseInt(cells[10].textContent.trim()) || 0,
-	            innerAcptCall: parseInt(cells[11].textContent.trim()) || 0,
-	            totalInCall: parseInt(cells[12].textContent.trim()) || 0,
-	            totalResCall: parseInt(cells[13].textContent.trim()) || 0,
-	            totalResRate: cells[14].textContent.trim(), // 문자열(%) 포함
-	            totalAcptCall: parseInt(cells[15].textContent.trim()) || 0,
-	            totalAcptRate: cells[16].textContent.trim(), // 문자열(%) 포함
+	            chattingIn: parseInt(cells[9].textContent.trim()) || 0,
+	            chattingAcpt: parseInt(cells[10].textContent.trim()) || 0,
+	            privateIn: parseInt(cells[11].textContent.trim()) || 0,
+	            onlineAcptCall: parseInt(cells[12].textContent.trim()) || 0,
+	            faxAcpt: parseInt(cells[13].textContent.trim()) || 0,
+	            innerAcpt: parseInt(cells[14].textContent.trim()) || 0,
+	            totalInCall: parseInt(cells[15].textContent.trim()) || 0,
+	            totalResCall: parseInt(cells[16].textContent.trim()) || 0,
+	            totalResRate: cells[17].textContent.trim(),
+	            totalAcptCall: parseInt(cells[18].textContent.trim()) || 0,
+	            totalAcptRate: cells[19].textContent.trim(), 
 	        };
 	        tableData.push(rowData);
 	    });
@@ -257,163 +371,110 @@ document.addEventListener("DOMContentLoaded", function () {
 	        });
 	});
 	
-    // "그래프 생성" 버튼 클릭 이벤트
-    graphButton.addEventListener("click", function () {
-        generateGraph(); // 그래프 생성 함수 호출
-    });
+	graphButton.addEventListener("click", function () {
+	    generateGraph(); // 그래프 생성 함수 호출
+	});
+	
+	// 그래프 생성 함수
+	function generateGraph() {
+	    const tbody = document.getElementById("data-body");
+	    const rows = Array.from(tbody.querySelectorAll("tr"));
+	
+	    const labels = [];
+	    const totalInCall = [];
+	    const totalResCall = [];
+	    const totalAcptCall = [];
+	
+	    // 선택된 체크박스 데이터만 수집
+	    rows.forEach(row => {
+	        const checkbox = row.querySelector("input[type='checkbox']");
+	        if (checkbox && checkbox.checked) {
+	            const dateCell = row.querySelector("td");
+	            if (!dateCell) return;
+	
+	            const date = dateCell.textContent.trim();
+	            const inCall = parseInt(row.children[15].textContent) || 0;
+	            const resCall = parseInt(row.children[16].textContent) || 0;
+	            const acptCall = parseInt(row.children[18].textContent) || 0;
+	
+	            labels.push(date);
+	            totalInCall.push(inCall);
+	            totalResCall.push(resCall);
+	            totalAcptCall.push(acptCall);
+	        }
+	    });
+	
+	    // 그래프 컨테이너 설정
+	    let graphContainer = document.getElementById("graphContainer");
+	    graphContainer.innerHTML = `<canvas id="barGraph" style="height: 20cm;"></canvas>`; // 높이를 고정
+	
+	    const ctx = document.getElementById("barGraph").getContext("2d");
+	
+	    // 기존 그래프 제거
+	    if (window.barChart) {
+	        window.barChart.destroy();
+	    }
+	
+	    // 새로운 막대 그래프 생성
+	    window.barChart = new Chart(ctx, {
+	        type: "bar",
+	        data: {
+	            labels: labels,
+	            datasets: [
+	                {
+	                    label: "총 인입",
+	                    data: totalInCall,
+	                    backgroundColor: "blue",
+	                },
+	                {
+	                    label: "총 응대",
+	                    data: totalResCall,
+	                    backgroundColor: "green",
+	                },
+	                {
+	                    label: "총 접수",
+	                    data: totalAcptCall,
+	                    backgroundColor: "red",
+	                },
+	            ],
+	        },
+	        options: {
+	            responsive: true,
+	            maintainAspectRatio: false, // 비율 유지하지 않음
+	            plugins: {
+	                tooltip: {
+	                    callbacks: {
+	                        label: function (context) {
+	                            const label = context.dataset.label || "";
+	                            return `${label}: ${context.raw}`;
+	                        },
+	                    },
+	                },
+	            },
+	            scales: {
+	                x: {
+	                    title: {
+	                        display: true,
+	                        text: "날짜",
+	                    },
+	                    ticks: {
+	                        autoSkip: true, // 자동으로 간격 조정
+	                        maxRotation: 0, // 회전하지 않음
+	                    },
+	                },
+	                y: {
+	                    title: {
+	                        display: true,
+	                        text: "건수",
+	                    },
+	                    beginAtZero: true,
+	                },
+	            },
+	        },
+	    });
+	}
+	
 
-    // 그래프 모달 요소들
-    const graphModal = document.getElementById("graphModal");
-    const closeGraphModal = document.getElementById("closeGraphModal");
-    const printGraphBtn = document.getElementById("printGraphBtn");
-
-    // 모달 닫기 버튼 이벤트 추가
-    closeGraphModal.addEventListener("click", function () {
-        graphModal.classList.add("hidden");
-    });
-
-    // "그래프 인쇄" 버튼 클릭 이벤트 추가
-    printGraphBtn.addEventListener("click", function () {
-        printGraph(); // 그래프 인쇄 함수 호출
-    });
-
-    // 그래프 생성 함수 (수정된 부분)
-    function generateGraph() {
-        const tbody = document.getElementById("data-body");
-        const rows = Array.from(tbody.querySelectorAll("tr"));
-        const validRows = rows.slice(0, -1); // 마지막 행(합계 행)을 제외
-
-        const labels = [];
-        const totalInCall = [];
-        const totalResCall = [];
-        const totalAcptCall = [];
-
-        // 데이터 수집 (수정된 부분: 마지막 행 제외)
-        validRows.forEach(row => {
-            const dateCell = row.querySelector("td");
-            if (!dateCell) return;
-
-            const date = dateCell.textContent.trim();
-            const inCall = parseInt(row.children[12].textContent) || 0;
-            const resCall = parseInt(row.children[13].textContent) || 0;
-            const acptCall = parseInt(row.children[15].textContent) || 0;
-
-            labels.push(date);
-            totalInCall.push(inCall);
-            totalResCall.push(resCall);
-            totalAcptCall.push(acptCall);
-        });
-
-        const ctx = document.getElementById("lineGraph").getContext("2d");
-
-        // 기존 그래프 제거
-        if (window.lineChart) {
-            window.lineChart.destroy();
-        }
-
-        // 새로운 선형 그래프 생성
-        window.lineChart = new Chart(ctx, {
-            type: "line",
-            data: {
-                labels: labels,
-                datasets: [
-                    {
-                        label: "총 인입",
-                        data: totalInCall,
-                        borderColor: "blue",
-                        fill: false,
-                    },
-                    {
-                        label: "총 응대",
-                        data: totalResCall,
-                        borderColor: "green",
-                        fill: false,
-                    },
-                    {
-                        label: "총 접수",
-                        data: totalAcptCall,
-                        borderColor: "red",
-                        fill: false,
-                    },
-                ],
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false, // 고정 크기에 맞춤 (수정된 부분)
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function (context) {
-                                const label = context.dataset.label || "";
-                                return `${label}: ${context.raw}`;
-                            },
-                        },
-                    },
-                },
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: "날짜",
-                        },
-                        ticks: {
-                            maxRotation: 0, // 축 레이블이 너무 길어질 경우 회전 방지 (수정된 부분)
-                            callback: function (val, index) {
-                                // 데이터가 많을 경우 일정 간격으로 레이블 표시 (수정된 부분)
-                                return index % Math.ceil(labels.length / 10) === 0
-                                    ? this.getLabelForValue(val)
-                                    : "";
-                            },
-                        },
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: "건수",
-                        },
-                        beginAtZero: true,
-                    },
-                },
-            },
-        });
-
-        graphModal.classList.remove("hidden"); // 모달 창 표시
-    }
-
-    // 그래프 인쇄 함수 (수정된 부분)
-    function printGraph() {
-        const printWindow = window.open('', '_blank');
-        const graphDataURL = document.getElementById("lineGraph").toDataURL();
-
-        printWindow.document.write(`
-            <html>
-            <head>
-                <title>그래프 인쇄</title>
-                <style>
-                    body, html {
-                        margin: 0;
-                        padding: 0;
-                        text-align: center;
-                    }
-                    img {
-                        max-width: 100%;
-                        height: auto;
-                    }
-                </style>
-            </head>
-            <body>
-                <img src="${graphDataURL}" alt="그래프 이미지">
-                <script>
-                    window.onload = function() {
-                        window.print();
-                        window.onafterprint = function() { window.close(); }
-                    }
-                </script>
-            </body>
-            </html>
-        `);
-        printWindow.document.close();
-    }
     
     
 });

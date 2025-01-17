@@ -67,14 +67,17 @@ public class StatController {
                 setCellValue(row, 6, rowData.get("voiceAcptCall")); // 보이스봇 접수
                 setCellValue(row, 7, rowData.get("chatInCall")); // 챗봇 인입
                 setCellValue(row, 8, rowData.get("chatAcptCall")); // 챗봇 접수
-                setCellValue(row, 9, rowData.get("onlineAcptCall")); // 온라인 접수
-                setCellValue(row, 10, rowData.get("firmAcptCall")); // 건설사 접수
-                setCellValue(row, 11, rowData.get("innerAcptCall")); // 내선콜 접수
-                setCellValue(row, 12, rowData.get("totalInCall")); // 총 인입
-                setCellValue(row, 13, rowData.get("totalResCall")); // 총 응답
-                setCellValue(row, 14, rowData.get("totalResRate")); // 총 응대율
-                setCellValue(row, 15, rowData.get("totalAcptCall")); // 총 접수
-                setCellValue(row, 16, rowData.get("totalAcptRate")); // 총 응대 접수율
+                setCellValue(row, 9, rowData.get("chattingIn")); // 채팅 인입
+                setCellValue(row, 10, rowData.get("chattingAcpt")); // 채팅 접수
+                setCellValue(row, 11, rowData.get("privateIn")); // 개별 인입
+                setCellValue(row, 12, rowData.get("onlineAcptCall")); // 온라인 접수
+                setCellValue(row, 13, rowData.get("faxAcpt")); // 팩스 접수
+                setCellValue(row, 14, rowData.get("innerAcpt")); // 내선콜 접수
+                setCellValue(row, 15, rowData.get("totalInCall")); // 총 인입
+                setCellValue(row, 16, rowData.get("totalResCall")); // 총 응답
+                setCellValue(row, 17, rowData.get("totalResRate")); // 총 응대율
+                setCellValue(row, 18, rowData.get("totalAcptCall")); // 총 접수
+                setCellValue(row, 19, rowData.get("totalAcptRate")); // 총 응대 접수율
             }
 
             // 응답 설정
@@ -129,14 +132,16 @@ public class StatController {
     
     @GetMapping("/reception")
     public ReceptionCounts getReceptionCounts(@RequestParam(name = "rcptDate") String rcptDate) {
-        // 각 접수 데이터 카운트 계산
         int countMan = acptRepository.countMan(rcptDate);
         int countVoice = acptRepository.countVoice(rcptDate);
         int countChat = acptRepository.countChat(rcptDate);
         int countInternet = acptRepository.countInternet(rcptDate);
-
+    	int countFax = acptRepository.countFax(rcptDate);
+    	int countPrivateIn = acptRepository.countPrivateIn(rcptDate);
+    	int countChatting = acptRepository.countChatting(rcptDate);
+    	
         // 계산된 결과를 반환
-        return new ReceptionCounts(countMan, countVoice, countChat, countInternet);
+        return new ReceptionCounts(countMan, countVoice, countChat, countInternet, countFax, countPrivateIn, countChatting);
     }
     
     @PostMapping("/checkAndSave")
@@ -163,17 +168,24 @@ public class StatController {
     
     // 접수 카운트 결과를 담는 내부 클래스
     public static class ReceptionCounts {
-        private int countMan;
-        private int countVoice;
-        private int countChat;
-        private int countInternet;
-
+        
+    	private int countMan=0;
+        private int countVoice=0;
+        private int countChat=0;
+        private int countInternet=0;
+        private int countFax=0;
+        private int countPrivateIn=0;
+        private int countChatting=0;
+        
         // 생성자
-        public ReceptionCounts(int countMan, int countVoice, int countChat, int countInternet) {
+        public ReceptionCounts(int countMan, int countVoice, int countChat, int countInternet, int countFax, int countPrivateIn, int countChatting) {
             this.countMan = countMan;
             this.countVoice = countVoice;
             this.countChat = countChat;
             this.countInternet = countInternet;
+            this.countFax = countFax;
+            this.countPrivateIn = countPrivateIn;
+            this.countChatting = countChatting;
         }
 
         // Getter 메서드
@@ -192,6 +204,19 @@ public class StatController {
         public int getCountInternet() {
             return countInternet;
         }
+        
+        public int getCountFax() {
+        	return countFax;
+        }
+        
+        public int getCountPrivateIn() {
+        	return countPrivateIn;
+        }
+        
+        public int getCountChatting() {
+        	return countChatting;
+        }
+        
     }
     
 }

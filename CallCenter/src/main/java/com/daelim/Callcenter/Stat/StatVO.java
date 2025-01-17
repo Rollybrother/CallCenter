@@ -24,43 +24,55 @@ public class StatVO {
 	// 자동으로 올라가는 인덱스
 	
 	@Column(name = "manInCall")
-	private int manInCall;
+	private int manInCall=0;
 	// 상담원 인입
 	
 	@Column(name = "manResCall")
-	private int manResCall;
+	private int manResCall=0;
 	//상담원 응답
 	
 	@Column(name = "manAcptCall")
-	private int manAcptCall;
+	private int manAcptCall=0;
 	//상담원 접수
 	
 	@Column(name = "voiceInCall")
-	private int voiceInCall;
+	private int voiceInCall=0;
 	//보이스봇 인입
 	
 	@Column(name = "voiceAcptCall")
-	private int voiceAcptCall;
+	private int voiceAcptCall=0;
 	//보이스봇 접수
 	
 	@Column(name = "chatInCall")
-	private int chatInCall;
+	private int chatInCall=0;
 	//챗봇 인입
 	
 	@Column(name = "chatAcptCall")
-	private int chatAcptCall;
+	private int chatAcptCall=0;
 	//챗봇 접수
 	
+	@Column(name = "chattingIn")
+	private int chattingIn=0;
+	//채팅 인입
+	
+	@Column(name = "chattingAcpt")
+	private int chattingAcpt=0;
+	//채팅 접수
+	
+	@Column(name = "privateIn")
+	private int privateIn=0;
+	//개별인입
+	
 	@Column(name = "onlineAcptCall")
-	private int onlineAcptCall;
+	private int onlineAcptCall=0;
 	//온라인 접수
 	
-	@Column(name = "firmAcptCall")
-	private int firmAcptCall;
-	//건설사 접수
+	@Column(name = "faxAcpt")
+	private int faxAcpt=0;
+	//팩스 접수
 	
-	@Column(name = "innerAcptCall")
-	private int innerAcptCall;
+	@Column(name = "innerAcpt")
+	private int innerAcpt=0;
 	//내선콜 접수
 	
 	@Column(name = "date")

@@ -1,5 +1,7 @@
 package com.daelim.Callcenter.Stat;
 
+import jakarta.persistence.Column;
+
 public class MonthlyStat {
     private String month;
     private Long manInCall;
@@ -9,12 +11,15 @@ public class MonthlyStat {
     private Long voiceAcptCall;
     private Long chatInCall;
     private Long chatAcptCall;
+	private Long chattingIn;
+	private Long chattingAcpt;
+	private Long privateIn;
     private Long onlineAcptCall;
-    private Long firmAcptCall;
-    private Long innerAcptCall;
+	private Long faxAcpt;
+	private Long innerAcpt;
 
-    // 생성자
-    public MonthlyStat(String month, Long manInCall, Long manResCall, Long manAcptCall, Long voiceInCall, Long voiceAcptCall, Long chatInCall, Long chatAcptCall, Long onlineAcptCall, Long firmAcptCall, Long innerAcptCall) {
+    public MonthlyStat(String month, Long manInCall, Long manResCall, Long manAcptCall, Long voiceInCall, Long voiceAcptCall, Long chatInCall, Long chatAcptCall, 
+    		Long chattingIn,Long chattingAcpt,Long privateIn,Long onlineAcptCall,Long faxAcpt,Long innerAcpt) {
         this.month = month;
         this.manInCall = manInCall;
         this.manResCall = manResCall;
@@ -23,12 +28,23 @@ public class MonthlyStat {
         this.voiceAcptCall = voiceAcptCall;
         this.chatInCall = chatInCall;
         this.chatAcptCall = chatAcptCall;
+        this.chattingIn = chattingIn;
+        this.chattingAcpt = chattingAcpt;
+        this.privateIn = privateIn;
         this.onlineAcptCall = onlineAcptCall;
-        this.firmAcptCall = firmAcptCall;
-        this.innerAcptCall = innerAcptCall;
+        this.faxAcpt = faxAcpt;
+        this.innerAcpt = innerAcpt;
     }
+    
+    public Long getPrivateIn() {
+		return privateIn;
+	}
 
-    // Getter 및 Setter
+	public void setPrivateIn(Long privateIn) {
+		this.privateIn = privateIn;
+	}
+
+	// Getter 및 Setter
     public String getMonth() {
         return month;
     }
@@ -101,19 +117,38 @@ public class MonthlyStat {
         this.onlineAcptCall = onlineAcptCall;
     }
 
-    public Long getFirmAcptCall() {
-        return firmAcptCall;
-    }
+	public Long getChattingIn() {
+		return chattingIn;
+	}
 
-    public void setFirmAcptCall(Long firmAcptCall) {
-        this.firmAcptCall = firmAcptCall;
-    }
+	public void setChattingIn(Long chattingIn) {
+		this.chattingIn = chattingIn;
+	}
 
-    public Long getInnerAcptCall() {
-        return innerAcptCall;
-    }
+	public Long getChattingAcpt() {
+		return chattingAcpt;
+	}
 
-    public void setInnerAcptCall(Long innerAcptCall) {
-        this.innerAcptCall = innerAcptCall;
-    }
+	public void setChattingAcpt(Long chattingAcpt) {
+		this.chattingAcpt = chattingAcpt;
+	}
+
+	public Long getFaxAcpt() {
+		return faxAcpt;
+	}
+
+	public void setFaxAcpt(Long faxAcpt) {
+		this.faxAcpt = faxAcpt;
+	}
+
+	public Long getInnerAcpt() {
+		return innerAcpt;
+	}
+
+	public void setInnerAcpt(Long innerAcpt) {
+		this.innerAcpt = innerAcpt;
+	}
+    
+    
+
 }
