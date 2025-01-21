@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 테이블 및 그래프 인쇄 함수
 	function printTableAndGraph() {
-	    // 체크된 행만 포함한 테이블 생성
+		
 	    const table = document.querySelector("#data-table table").cloneNode(true);
 	    const thead = table.querySelector("thead");
 	    const tbody = table.querySelector("tbody");
@@ -59,24 +59,47 @@ document.addEventListener("DOMContentLoaded", function () {
 	        }
 	    });
 	
+	    // 합계 행이 이미 존재하는 경우 유지
+	    const summaryRow = document.getElementById("summary-row");
+	    if (summaryRow) {
+	        tbody.appendChild(summaryRow.cloneNode(true)); // 합계 행 복제 및 추가
+	    }
+	
+	    // 빈 행 추가 (31개 미만인 경우)
+		const rowCount = tbody.querySelectorAll("tr").length;
+		const totalRowsNeeded = 31; // 총 31개 행이 필요
+		const colCount = 20; // 각 행의 가로 칸 수를 20개로 고정
+		
+		if (rowCount < totalRowsNeeded) {
+		    for (let i = 0; i < totalRowsNeeded - rowCount; i++) {
+		        const emptyRow = document.createElement("tr");
+		        for (let j = 0; j < colCount; j++) {
+		            const emptyCell = document.createElement("td");
+		            emptyCell.textContent = ""; // 빈 데이터
+		            emptyRow.appendChild(emptyCell);
+		        }
+		        tbody.appendChild(emptyRow);
+		    }
+		}
+	
 	    // 체크박스 제거 (날짜 열 포함)
 	    thead.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
-	        const cell = checkbox.closest("th"); // 체크박스가 있는 헤더 셀
+	        const cell = checkbox.closest("th");
 	        if (cell) {
-	            cell.textContent = cell.textContent.trim(); // 체크박스를 제거하고 남은 텍스트 유지
+	            cell.textContent = cell.textContent.trim();
 	        }
 	    });
 	
 	    tbody.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
-	        const cell = checkbox.closest("td"); // 체크박스가 있는 데이터 셀
+	        const cell = checkbox.closest("td");
 	        if (cell) {
-	            cell.textContent = cell.textContent.trim(); // 체크박스를 제거하고 남은 텍스트(날짜) 유지
+	            cell.textContent = cell.textContent.trim();
 	        }
 	    });
 	
-	    // 그래프 캔버스 복제
+	    // 그래프 복제
 	    const graphCanvas = document.getElementById("barGraph");
-	    const graphImage = graphCanvas ? graphCanvas.toDataURL() : null; // 그래프 이미지 데이터 URL 생성
+	    const graphImage = graphCanvas ? graphCanvas.toDataURL() : null;
 	
 	    // 새로운 창 열기
 	    const printWindow = window.open("", "_blank");
@@ -93,37 +116,38 @@ document.addEventListener("DOMContentLoaded", function () {
 	                table {
 	                    width: 100%;
 	                    border-collapse: collapse;
-	                    margin: 20px 0;
-	                    font-size: 10px; /* 글자 크기 줄임 */
+	                    margin: 0;
+	                    font-size: 10px;
+	                    height: 17cm; /* 테이블 높이를 17cm로 고정 */
 	                }
 	                th, td {
 	                    border: 1px solid #ddd;
-	                    padding: 4px; /* 셀 간격 줄임 */
 	                    text-align: center;
+	                    padding: 4px;
 	                }
 	                th {
 	                    background-color: #f4f4f4;
 	                    font-weight: bold;
-	                    white-space: nowrap; /* 텍스트가 한 줄에 유지되도록 설정 */
+	                    white-space: nowrap;
+	                    height: 0.5cm; /* 헤더 높이를 0.5cm로 고정 */
 	                }
-	                .page-break {
-	                    page-break-before: always; /* A4 한 장 추가 */
+	                td {
+	                    height: calc((17cm - 0.5cm) / 32); /* 데이터 행 높이를 동적으로 계산 */
 	                }
 	                .graph-container {
 	                    text-align: center;
-	                    margin-top: 20px;
+	                    height: 8cm; /* 그래프 높이를 8cm로 고정 */
 	                }
 	                .graph-container img {
+	                    max-height: 100%;
 	                    max-width: 100%;
-	                    height: auto;
 	                }
 	            </style>
 	        </head>
 	        <body>
-	            <h1 style="font-size: 16px; margin-bottom: 10px;">테이블 데이터</h1>
-	            ${table.outerHTML} <!-- 체크된 행만 포함된 테이블 -->
+	            <h1 style="font-size: 16px; margin-bottom: 10px;">${window.queryType || "조회된 테이블 데이터"}</h1>
+	            ${table.outerHTML}
 	            ${graphImage ? `
-	            <div class="page-break"></div>
 	            <div class="graph-container">
 	                <h2>그래프</h2>
 	                <img src="${graphImage}" alt="그래프 이미지">
@@ -131,19 +155,20 @@ document.addEventListener("DOMContentLoaded", function () {
 	            ` : ""}
 	            <script>
 	                window.onload = function() {
-	                    window.print(); // 인쇄 실행
-	                    window.onafterprint = function() { window.close(); } // 인쇄 후 창 닫기
+	                    window.print();
+	                    window.onafterprint = function() { window.close(); }
 	                }
 	            </script>
 	        </body>
 	        </html>
 	    `);
 	
-	    printWindow.document.close(); // 문서 스트림 닫기
+	    printWindow.document.close();
 	}
 
 
-    
+	
+	
     // "수정" 버튼 클릭 이벤트
     editButton.addEventListener("click", function () {
         const checkedRows = document.querySelectorAll("input[type='checkbox']:checked");
@@ -384,7 +409,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	    const totalInCall = [];
 	    const totalResCall = [];
 	    const totalAcptCall = [];
-	
+		
 	    // 선택된 체크박스 데이터만 수집
 	    rows.forEach(row => {
 	        const checkbox = row.querySelector("input[type='checkbox']");
@@ -403,7 +428,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	            totalAcptCall.push(acptCall);
 	        }
 	    });
-	
+		
 	    // 그래프 컨테이너 설정
 	    let graphContainer = document.getElementById("graphContainer");
 	    graphContainer.innerHTML = `<canvas id="barGraph" style="height: 20cm;"></canvas>`; // 높이를 고정
@@ -474,7 +499,5 @@ document.addEventListener("DOMContentLoaded", function () {
 	    });
 	}
 	
-
-    
     
 });

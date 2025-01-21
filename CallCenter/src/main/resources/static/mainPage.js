@@ -108,45 +108,52 @@ document.addEventListener("DOMContentLoaded", function () {
 		
         tbody.insertAdjacentHTML("beforeend", summaryRow);
     }
-
-    // 일별 조회
-    window.fetchDailyData = function () {
-        const startDate = document.getElementById("startDate").value.replace(/-/g, "");
-        const endDate = document.getElementById("endDate").value.replace(/-/g, "");
-
-        clearTable(); // 기존 데이터 초기화
-
-        fetch(`/api/statistics/daily?startDate=${startDate}&endDate=${endDate}`)
-            .then((response) => response.json())
-            .then((data) => renderTableData(data))
-            .catch((error) => console.error("Error fetching daily data:", error));
-    };
-
-    // 월별 조회
-    window.fetchMonthlyData = function () {
-        const year = document.getElementById("year").value;
-        const month = document.getElementById("month").value.padStart(2, "0");
-
-        clearTable(); // 기존 데이터 초기화
-
-        fetch(`/api/statistics/monthly?year=${year}&month=${month}`)
-            .then((response) => response.json())
-            .then((data) => renderTableData(data))
-            .catch((error) => console.error("Error fetching monthly data:", error));
-    };
 	
-    // 연별 조회
-    window.fetchYearlyData = function () {
-        const year = document.getElementById("year").value;
+	
+    // 조회 타입을 저장할 전역 변수
+	window.queryType = ""; // 다른 파일에서도 접근 가능하도록 전역 변수 선언
+	
+	// 일별 조회
+	window.fetchDailyData = function () {
+	    window.queryType = "일별조회 결과"; // 조회 타입 설정
+	    const startDate = document.getElementById("startDate").value.replace(/-/g, "");
+	    const endDate = document.getElementById("endDate").value.replace(/-/g, "");
+	
+	    clearTable(); // 기존 데이터 초기화
+	
+	    fetch(`/api/statistics/daily?startDate=${startDate}&endDate=${endDate}`)
+	        .then((response) => response.json())
+	        .then((data) => renderTableData(data))
+	        .catch((error) => console.error("Error fetching daily data:", error));
+	};
+	
+	// 월별 조회
+	window.fetchMonthlyData = function () {
+	    window.queryType = "월별조회 결과"; // 조회 타입 설정
+	    const year = document.getElementById("year").value;
+	    const month = document.getElementById("month").value.padStart(2, "0");
+	
+	    clearTable(); // 기존 데이터 초기화
+	
+	    fetch(`/api/statistics/monthly?year=${year}&month=${month}`)
+	        .then((response) => response.json())
+	        .then((data) => renderTableData(data))
+	        .catch((error) => console.error("Error fetching monthly data:", error));
+	};
+	
+	// 연별 조회
+	window.fetchYearlyData = function () {
+	    window.queryType = "연별조회 결과"; // 조회 타입 설정
+	    const year = document.getElementById("year").value;
+	
+	    clearTable(); // 기존 데이터 초기화
+	
+	    fetch(`/api/statistics/yearly?year=${year}`)
+	        .then((response) => response.json())
+	        .then((data) => renderYearlyData(data))
+	        .catch((error) => console.error("Error fetching yearly data:", error));
+	};
 
-        clearTable(); // 기존 데이터 초기화
-
-        fetch(`/api/statistics/yearly?year=${year}`)
-            .then((response) => response.json())
-            .then((data) => renderYearlyData(data))
-            .catch((error) => console.error("Error fetching yearly data:", error));
-    };
-    
     
 
     // 테이블 데이터를 렌더링하는 함수 (체크박스 포함)
@@ -445,7 +452,7 @@ document.addEventListener("DOMContentLoaded", function () {
             checkbox.checked = selectAllCheckbox.checked;
         });
     });
-
+	
     document.addEventListener("change", function (event) {
         if (event.target.classList.contains("row-checkbox")) {
             
@@ -454,11 +461,11 @@ document.addEventListener("DOMContentLoaded", function () {
             const allChecked = Array.from(rowCheckboxes).every(
                 (checkbox) => checkbox.checked
             );
-
+	
             selectAllCheckbox.checked = allChecked;
         }
     });
 	
-	    
+    
     
 });

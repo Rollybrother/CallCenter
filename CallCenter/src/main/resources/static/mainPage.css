@@ -149,3 +149,23 @@ main {
     background-color: #218838;
 }
 
+@media print {
+    #data-table table {
+        height: 17cm; /* 테이블 전체 높이를 17cm로 고정 */
+        overflow: hidden; /* 초과 데이터 숨김 */
+    }
+
+    #data-table th {
+        height: 1cm; /* 컬럼 헤더 높이를 1cm로 고정 */
+    }
+
+    #data-table td {
+        height: calc((17cm - 1cm) / 32); /* 데이터 행 높이를 동적으로 설정 (최대 32개 데이터) */
+    }
+
+    #graphContainer {
+        height: 8cm; /* 그래프 높이를 8cm로 고정 */
+    }
+}
+
+
