@@ -20,7 +20,12 @@ public class MainController {
 
     @GetMapping("/")
     public String loginFirst(HttpSession session) {
-        session.invalidate(); 
+    	// 세션에서 사용자 정보 확인
+        LoginVO user = (LoginVO) session.getAttribute("user");
+        if (user != null) {
+            // 이미 로그인 상태라면 메인 페이지로 리다이렉트
+            return "mainPage";
+        }
         return "login"; 
     }
 
@@ -39,5 +44,5 @@ public class MainController {
         session.setAttribute("user", user); 
         return "mainPage"; 
     }
-    
+
 }

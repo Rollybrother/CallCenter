@@ -28,28 +28,28 @@ document.addEventListener("DOMContentLoaded", function () {
     graphButton.id = "generateGraphButton";
     graphButton.textContent = "그래프 생성";
     buttonGroup.appendChild(graphButton);
-
+	
     // "인쇄" 버튼 생성
     const printButton = document.createElement("button");
     printButton.id = "printBtn";
     printButton.textContent = "인쇄";
     buttonGroup.appendChild(printButton);
-
+	
     // 버튼 그룹을 filter-section 아래에 추가
     filterSection.insertAdjacentElement("afterend", buttonGroup);
-
+	
     // "인쇄" 버튼 클릭 이벤트
     printButton.addEventListener("click", function () {
         printTableAndGraph(); // 테이블 인쇄 함수 호출
     });
-
+	
     // 테이블 및 그래프 인쇄 함수
 	function printTableAndGraph() {
 		
 	    const table = document.querySelector("#data-table table").cloneNode(true);
 	    const thead = table.querySelector("thead");
 	    const tbody = table.querySelector("tbody");
-	
+		
 	    // 체크박스가 체크된 행만 유지
 	    const rows = Array.from(tbody.querySelectorAll("tr"));
 	    rows.forEach(row => {
@@ -58,13 +58,13 @@ document.addEventListener("DOMContentLoaded", function () {
 	            row.remove(); // 체크되지 않은 행 삭제
 	        }
 	    });
-	
+		
 	    // 합계 행이 이미 존재하는 경우 유지
 	    const summaryRow = document.getElementById("summary-row");
 	    if (summaryRow) {
 	        tbody.appendChild(summaryRow.cloneNode(true)); // 합계 행 복제 및 추가
 	    }
-	
+		
 	    // 빈 행 추가 (31개 미만인 경우)
 		const rowCount = tbody.querySelectorAll("tr").length;
 		const totalRowsNeeded = 31; // 총 31개 행이 필요
@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	    });
 	
 	    // 그래프 복제
-	    const graphCanvas = document.getElementById("barGraph");
+	    const graphCanvas = document.getElementById("lineGraph");
 	    const graphImage = graphCanvas ? graphCanvas.toDataURL() : null;
 	
 	    // 새로운 창 열기
@@ -133,6 +133,9 @@ document.addEventListener("DOMContentLoaded", function () {
 	                }
 	                td {
 	                    height: calc((17cm - 0.5cm) / 32); /* 데이터 행 높이를 동적으로 계산 */
+	                    //데이터 굵은 고딕체로 인쇄
+	                    font-weight: bold;
+    					font-family: Arial, sans-serif;
 	                }
 	                .graph-container {
 	                    text-align: center;
@@ -165,8 +168,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	
 	    printWindow.document.close();
 	}
-
-
+	
 	
 	
     // "수정" 버튼 클릭 이벤트
@@ -300,7 +302,7 @@ document.addEventListener("DOMContentLoaded", function () {
             editButton.textContent = "수정";
         }
     });
-
+	
     // "삭제" 버튼 클릭 이벤트
     deleteButton.addEventListener("click", function () {
         const checkedRows = document.querySelectorAll("input[type='checkbox']:checked");
@@ -402,6 +404,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	
 	// 그래프 생성 함수
 	function generateGraph() {
+		
 	    const tbody = document.getElementById("data-body");
 	    const rows = Array.from(tbody.querySelectorAll("tr"));
 	
@@ -409,7 +412,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	    const totalInCall = [];
 	    const totalResCall = [];
 	    const totalAcptCall = [];
-		
+	    
 	    // 선택된 체크박스 데이터만 수집
 	    rows.forEach(row => {
 	        const checkbox = row.querySelector("input[type='checkbox']");
@@ -428,38 +431,51 @@ document.addEventListener("DOMContentLoaded", function () {
 	            totalAcptCall.push(acptCall);
 	        }
 	    });
-		
+	    
 	    // 그래프 컨테이너 설정
 	    let graphContainer = document.getElementById("graphContainer");
-	    graphContainer.innerHTML = `<canvas id="barGraph" style="height: 20cm;"></canvas>`; // 높이를 고정
+	    graphContainer.innerHTML = `<canvas id="lineGraph" style="height: 20cm;"></canvas>`; // 높이를 고정
+	    
+	    const cmToPx = 37.8; // cm to px 변환 기준
+	    const lineGraph = document.getElementById('lineGraph');
+	    
+	    // 스타일과 실제 크기 동기화
+	    lineGraph.style.height = '15cm';
+	    lineGraph.height = 15 * cmToPx;
 	
-	    const ctx = document.getElementById("barGraph").getContext("2d");
+	    const ctx = lineGraph.getContext("2d");
 	
 	    // 기존 그래프 제거
 	    if (window.barChart) {
 	        window.barChart.destroy();
 	    }
 	
-	    // 새로운 막대 그래프 생성
+	    // 새로운 선형 그래프 생성
 	    window.barChart = new Chart(ctx, {
-	        type: "bar",
+	        type: "line",
 	        data: {
 	            labels: labels,
 	            datasets: [
 	                {
 	                    label: "총 인입",
 	                    data: totalInCall,
-	                    backgroundColor: "blue",
+	                    borderColor: "blue",
+	                    fill: false,
+	                    tension: 0.1, // 곡선 매끄럽게
 	                },
 	                {
 	                    label: "총 응대",
 	                    data: totalResCall,
-	                    backgroundColor: "green",
+	                    borderColor: "green",
+	                    fill: false,
+	                    tension: 0.1,
 	                },
 	                {
 	                    label: "총 접수",
 	                    data: totalAcptCall,
-	                    backgroundColor: "red",
+	                    borderColor: "red",
+	                    fill: false,
+	                    tension: 0.1,
 	                },
 	            ],
 	        },
@@ -498,6 +514,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	        },
 	    });
 	}
+	
 	
     
 });

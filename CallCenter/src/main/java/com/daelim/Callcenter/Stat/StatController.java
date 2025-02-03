@@ -36,12 +36,10 @@ public class StatController {
     }
     
     @PostMapping("/excelDownload")
-    public void downloadExcel(@RequestBody List<Map<String, String>> tableData, HttpServletResponse response) throws Exception {
-        // 템플릿 파일 경로
-        String templatePath = "src/main/resources/templates/조회결과.xlsx";
-
-        try (FileInputStream fis = new FileInputStream(templatePath);
-             Workbook workbook = new XSSFWorkbook(fis)) {
+    public void downloadExcel(@RequestBody List<Map<String, String>> tableData, HttpServletResponse response) {
+        // 템플릿 파일을 클래스패스에서 읽기
+        try (InputStream templateStream = getClass().getClassLoader().getResourceAsStream("templates/조회결과.xlsx");
+             Workbook workbook = new XSSFWorkbook(templateStream)) {
 
             // 첫 번째 시트 가져오기
             Sheet sheet = workbook.getSheetAt(0);
@@ -88,10 +86,12 @@ public class StatController {
             try (OutputStream os = response.getOutputStream()) {
                 workbook.write(os);
             }
+        } catch (IOException e) {
+            throw new RuntimeException("엑셀 파일 생성 중 오류가 발생했습니다.", e);
         }
     }
 
-    // 셀 값을 설정하는 메서드 (기존 셀 유지)
+    // 셀 값을 설정하는 메서드
     private void setCellValue(Row row, int cellIndex, String value) {
         Cell cell = row.getCell(cellIndex);
         if (cell == null) {
@@ -99,6 +99,7 @@ public class StatController {
         }
         cell.setCellValue(value);
     }
+
     
     @GetMapping("/daily")
     public List<StatVO> getDailyStatistics(
@@ -117,11 +118,10 @@ public class StatController {
     }
     
     @GetMapping("/yearly")
-    public List<MonthlyStat> getYearlyStatistics(@RequestParam("year") String year) {
-        String start = year + "0101";
-        String end = year + "1231";
-        List<MonthlyStat> result = statRepository.findMonthlyStatsByYear(start, end);
-        return result;
+    public List<MonthlyStat> getYearlyStatistics(
+            @RequestParam("start") String start, 
+            @RequestParam("end") String end) {
+        return statRepository.findMonthlyStatsByYear(start, end);
     }
     
     // 통계 등록

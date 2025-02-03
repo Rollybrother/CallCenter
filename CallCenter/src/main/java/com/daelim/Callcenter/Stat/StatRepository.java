@@ -33,7 +33,6 @@ public interface StatRepository extends JpaRepository<StatVO, Integer> {
 		       "GROUP BY SUBSTRING(s.date, 1, 6) " +
 		       "ORDER BY SUBSTRING(s.date, 1, 6) ASC, s.date ASC")
 	 List<MonthlyStat> findMonthlyStatsByYear(@Param("start") String start, @Param("end") String end);
-
 	 
 	 @Query("SELECT s FROM StatVO s WHERE s.date BETWEEN :startDate AND :endDate ORDER BY s.date ASC")
      List<StatVO> findByDateBetween(@Param("startDate") String startDate, @Param("endDate") String endDate);

@@ -32,6 +32,7 @@ public class LoginController {
 
     @GetMapping("/login")
     public String loginPage(HttpSession session, Model model) {
+    	
         String error = (String) session.getAttribute("error");
         if (error != null) {
             model.addAttribute("error", error);
@@ -86,7 +87,7 @@ public class LoginController {
             return "redirect:/loginController/login";
         }
     }
-
+    
     @GetMapping("/checkId")
     @ResponseBody
     public Map<String, Boolean> checkId(@RequestParam("id") String id) {
@@ -94,4 +95,5 @@ public class LoginController {
         response.put("exists", loginRepository.findById(id) != null);
         return response;
     }
+    
 }

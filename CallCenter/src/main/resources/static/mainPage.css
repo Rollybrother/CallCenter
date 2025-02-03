@@ -111,7 +111,7 @@ main {
     border-radius: 8px;
     padding: 20px;
     width: 29cm; /* 고정 가로 크기 */
-    height: 21cm; /* 고정 세로 크기 */
+    height: 15cm; /* 고정 세로 크기 */
     z-index: 1001; /* 모달 위계 설정 */
 }
 
@@ -148,6 +148,11 @@ main {
 #graphModal #printGraphBtn:hover {
     background-color: #218838;
 }
+/*테이블 데이터 굵은 고딕체로*/
+#data-body td {
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+}
 
 @media print {
     #data-table table {
@@ -166,6 +171,7 @@ main {
     #graphContainer {
         height: 8cm; /* 그래프 높이를 8cm로 고정 */
     }
+    
 }
 
 

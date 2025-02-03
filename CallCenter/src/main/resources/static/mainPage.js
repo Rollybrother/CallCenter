@@ -22,15 +22,16 @@ document.addEventListener("DOMContentLoaded", function () {
             <button onclick="fetchMonthlyData()">조회</button>
         `;
     }
-
+	
     function showYearlyFilter() {
-        const filterSection = document.getElementById("filter-section");
-        filterSection.innerHTML = `
-            <label>연도: <input type="number" id="year" placeholder="YYYY"></label>
-            <button onclick="fetchYearlyData()">조회</button>
-        `;
-    }
-
+	    const filterSection = document.getElementById("filter-section");
+	    filterSection.innerHTML = `
+	        <label>시작: <input type="month" id="startYearMonth"></label>
+	        <label>끝: <input type="month" id="endYearMonth"></label>
+	        <button onclick="fetchYearlyData()">조회</button>
+	    `;
+	}
+	
     // 테이블 초기화 함수
     function clearTable() {
         const tbody = document.getElementById("data-body");
@@ -143,12 +144,23 @@ document.addEventListener("DOMContentLoaded", function () {
 	
 	// 연별 조회
 	window.fetchYearlyData = function () {
-	    window.queryType = "연별조회 결과"; // 조회 타입 설정
-	    const year = document.getElementById("year").value;
+	    window.queryType = "연도별조회 결과"; // 조회 타입 설정
+	    const startYearMonth = document.getElementById("startYearMonth").value; // YYYY-MM
+	    const endYearMonth = document.getElementById("endYearMonth").value; // YYYY-MM
+	
+	    if (!startYearMonth || !endYearMonth) {
+	        alert("시작 및 끝 연도와 월을 선택해야 합니다.");
+	        return;
+	    }
+	
+	    const start = startYearMonth.replace("-", "") + "01"; // YYYYMM01
+	    const endYear = endYearMonth.split("-")[0];
+	    const endMonth = endYearMonth.split("-")[1];
+	    const end = endYear + endMonth + "31"; // YYYYMM31
 	
 	    clearTable(); // 기존 데이터 초기화
 	
-	    fetch(`/api/statistics/yearly?year=${year}`)
+	    fetch(`/api/statistics/yearly?start=${start}&end=${end}`)
 	        .then((response) => response.json())
 	        .then((data) => renderYearlyData(data))
 	        .catch((error) => console.error("Error fetching yearly data:", error));
@@ -319,8 +331,6 @@ document.addEventListener("DOMContentLoaded", function () {
 	}
 
 
-
-	
 	// 통계 등록 버튼 클릭 시 모달 표시
     document.getElementById("registerBtn").addEventListener("click", function() {
         document.getElementById("modal").classList.remove("hidden");
