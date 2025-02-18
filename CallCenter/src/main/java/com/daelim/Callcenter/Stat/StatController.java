@@ -67,17 +67,16 @@ public class StatController {
                 setCellValue(row, 8, rowData.get("chatAcptCall")); // 챗봇 접수
                 setCellValue(row, 9, rowData.get("chattingIn")); // 채팅 인입
                 setCellValue(row, 10, rowData.get("chattingAcpt")); // 채팅 접수
-                setCellValue(row, 11, rowData.get("privateIn")); // 개별 인입
+                setCellValue(row, 11, rowData.get("innerAcpt")); // 내선콜 접수
                 setCellValue(row, 12, rowData.get("onlineAcptCall")); // 온라인 접수
                 setCellValue(row, 13, rowData.get("faxAcpt")); // 팩스 접수
-                setCellValue(row, 14, rowData.get("innerAcpt")); // 내선콜 접수
-                setCellValue(row, 15, rowData.get("totalInCall")); // 총 인입
-                setCellValue(row, 16, rowData.get("totalResCall")); // 총 응답
-                setCellValue(row, 17, rowData.get("totalResRate")); // 총 응대율
-                setCellValue(row, 18, rowData.get("totalAcptCall")); // 총 접수
-                setCellValue(row, 19, rowData.get("totalAcptRate")); // 총 응대 접수율
+                setCellValue(row, 14, rowData.get("totalInCall")); // 총 인입
+                setCellValue(row, 15, rowData.get("totalResCall")); // 총 응답
+                setCellValue(row, 16, rowData.get("totalResRate")); // 총 응대율
+                setCellValue(row, 17, rowData.get("totalAcptCall")); // 총 접수
+                setCellValue(row, 18, rowData.get("totalAcptRate")); // 총 응대 접수율
             }
-
+        	
             // 응답 설정
             String fileName = "조회결과.xlsx";
             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
@@ -90,16 +89,16 @@ public class StatController {
             throw new RuntimeException("엑셀 파일 생성 중 오류가 발생했습니다.", e);
         }
     }
-
+    
     // 셀 값을 설정하는 메서드
     private void setCellValue(Row row, int cellIndex, String value) {
+    	
         Cell cell = row.getCell(cellIndex);
         if (cell == null) {
             cell = row.createCell(cellIndex);
         }
         cell.setCellValue(value);
     }
-
     
     @GetMapping("/daily")
     public List<StatVO> getDailyStatistics(
@@ -107,7 +106,7 @@ public class StatController {
             @RequestParam("endDate") String endDate) {
         return statRepository.findByDateBetween(startDate, endDate);
     }
-
+    
     @GetMapping("/monthly")
     public List<StatVO> getMonthlyStatistics(
             @RequestParam("year") String year, 
@@ -137,11 +136,11 @@ public class StatController {
         int countChat = acptRepository.countChat(rcptDate);
         int countInternet = acptRepository.countInternet(rcptDate);
     	int countFax = acptRepository.countFax(rcptDate);
-    	int countPrivateIn = acptRepository.countPrivateIn(rcptDate);
+    	int countInnerAcpt = acptRepository.countInnerAcpt(rcptDate);
     	int countChatting = acptRepository.countChatting(rcptDate);
     	
         // 계산된 결과를 반환
-        return new ReceptionCounts(countMan, countVoice, countChat, countInternet, countFax, countPrivateIn, countChatting);
+        return new ReceptionCounts(countMan, countVoice, countChat, countInternet, countFax, countInnerAcpt, countChatting);
     }
     
     @PostMapping("/checkAndSave")
@@ -149,12 +148,12 @@ public class StatController {
         // 동일한 날짜의 데이터가 존재하는지 확인
         String date = statVO.getDate();
         List<StatVO> existingRecords = statRepository.findByDate(date);
-
+        
         // 데이터가 이미 존재하면 "EXISTS" 반환
         if (!existingRecords.isEmpty()) {
             return "EXISTS";
         }
-
+        
         // 데이터가 존재하지 않으면 저장
         statRepository.save(statVO);
         return "SAVED";
@@ -174,17 +173,17 @@ public class StatController {
         private int countChat=0;
         private int countInternet=0;
         private int countFax=0;
-        private int countPrivateIn=0;
+        private int countInnerAcpt=0;
         private int countChatting=0;
         
         // 생성자
-        public ReceptionCounts(int countMan, int countVoice, int countChat, int countInternet, int countFax, int countPrivateIn, int countChatting) {
+        public ReceptionCounts(int countMan, int countVoice, int countChat, int countInternet, int countFax, int countInnerAcpt, int countChatting) {
             this.countMan = countMan;
             this.countVoice = countVoice;
             this.countChat = countChat;
             this.countInternet = countInternet;
             this.countFax = countFax;
-            this.countPrivateIn = countPrivateIn;
+            this.countInnerAcpt = countInnerAcpt;
             this.countChatting = countChatting;
         }
 
@@ -209,8 +208,8 @@ public class StatController {
         	return countFax;
         }
         
-        public int getCountPrivateIn() {
-        	return countPrivateIn;
+        public int getCountInnerAcpt() {
+        	return countInnerAcpt;
         }
         
         public int getCountChatting() {

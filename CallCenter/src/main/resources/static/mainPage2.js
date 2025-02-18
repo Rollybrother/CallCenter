@@ -28,61 +28,61 @@ document.addEventListener("DOMContentLoaded", function () {
     graphButton.id = "generateGraphButton";
     graphButton.textContent = "그래프 생성";
     buttonGroup.appendChild(graphButton);
-	
+
     // "인쇄" 버튼 생성
     const printButton = document.createElement("button");
     printButton.id = "printBtn";
     printButton.textContent = "인쇄";
     buttonGroup.appendChild(printButton);
-	
+
     // 버튼 그룹을 filter-section 아래에 추가
     filterSection.insertAdjacentElement("afterend", buttonGroup);
-	
+
     // "인쇄" 버튼 클릭 이벤트
     printButton.addEventListener("click", function () {
         printTableAndGraph(); // 테이블 인쇄 함수 호출
     });
-	
+
     // 테이블 및 그래프 인쇄 함수
 	function printTableAndGraph() {
 		
 	    const table = document.querySelector("#data-table table").cloneNode(true);
 	    const thead = table.querySelector("thead");
 	    const tbody = table.querySelector("tbody");
-		
+	
 	    // 체크박스가 체크된 행만 유지
 	    const rows = Array.from(tbody.querySelectorAll("tr"));
 	    rows.forEach(row => {
 	        const checkbox = row.querySelector("input[type='checkbox']");
 	        if (!checkbox || !checkbox.checked) {
-	            row.remove(); // 체크되지 않은 행 삭제
+	            row.remove();
 	        }
 	    });
-		
-	    // 합계 행이 이미 존재하는 경우 유지
+	
+	    // 합계 행 유지
 	    const summaryRow = document.getElementById("summary-row");
 	    if (summaryRow) {
-	        tbody.appendChild(summaryRow.cloneNode(true)); // 합계 행 복제 및 추가
+	        tbody.appendChild(summaryRow.cloneNode(true));
 	    }
-		
-	    // 빈 행 추가 (31개 미만인 경우)
-		const rowCount = tbody.querySelectorAll("tr").length;
-		const totalRowsNeeded = 31; // 총 31개 행이 필요
-		const colCount = 20; // 각 행의 가로 칸 수를 20개로 고정
-		
-		if (rowCount < totalRowsNeeded) {
-		    for (let i = 0; i < totalRowsNeeded - rowCount; i++) {
-		        const emptyRow = document.createElement("tr");
-		        for (let j = 0; j < colCount; j++) {
-		            const emptyCell = document.createElement("td");
-		            emptyCell.textContent = ""; // 빈 데이터
-		            emptyRow.appendChild(emptyCell);
-		        }
-		        tbody.appendChild(emptyRow);
-		    }
-		}
 	
-	    // 체크박스 제거 (날짜 열 포함)
+	    // 빈 행 추가 (31개 미만인 경우)
+	    const rowCount = tbody.querySelectorAll("tr").length;
+	    const totalRowsNeeded = 31;
+	    const colCount = 20;
+	
+	    if (rowCount < totalRowsNeeded) {
+	        for (let i = 0; i < totalRowsNeeded - rowCount; i++) {
+	            const emptyRow = document.createElement("tr");
+	            for (let j = 0; j < colCount; j++) {
+	                const emptyCell = document.createElement("td");
+	                emptyCell.textContent = "";
+	                emptyRow.appendChild(emptyCell);
+	            }
+	            tbody.appendChild(emptyRow);
+	        }
+	    }
+	
+	    // 체크박스 제거
 	    thead.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
 	        const cell = checkbox.closest("th");
 	        if (cell) {
@@ -106,22 +106,43 @@ document.addEventListener("DOMContentLoaded", function () {
 	    printWindow.document.write(`
 	        <html>
 	        <head>
-	            <title>테이블 및 그래프 인쇄</title>
+	            <title> </title>
 	            <style>
+	                @page {
+	                    size: A4;
+	                    margin: 2cm;
+	                }
 	                body {
 	                    font-family: Arial, sans-serif;
 	                    margin: 0;
-	                    padding: 20px;
+	                    padding: 0;
+	                    text-align: center;
+	                }
+	                /* ✅ 메인 타이틀 (콜센터 통계) - 중앙, 크고 굵게 */
+	                .main-title {
+	                    font-size: 24px; /* 크기 증가 */
+	                    font-weight: bold;
+	                    text-align: center;
+	                    margin-bottom: 1cm; /* 간격 추가 */
+	                }
+	                /* ✅ 서브 타이틀 (일별조회 결과) - 좌측 상단, 중간 크기 */
+	                .sub-title {
+	                    font-size: 14px; /* 중간 크기 */
+	                    font-weight: bold;
+	                    text-align: left; /* 좌측 정렬 */
+	                    margin-bottom: 0.5cm;
 	                }
 	                table {
 	                    width: 100%;
+	                    height: 90%;
 	                    border-collapse: collapse;
 	                    margin: 0;
 	                    font-size: 10px;
-	                    height: 17cm; /* 테이블 높이를 17cm로 고정 */
+	                    height: 16cm;
+	                    border: 3px solid black;
 	                }
 	                th, td {
-	                    border: 1px solid #ddd;
+	                    border: 3px solid black;
 	                    text-align: center;
 	                    padding: 4px;
 	                }
@@ -129,26 +150,27 @@ document.addEventListener("DOMContentLoaded", function () {
 	                    background-color: #f4f4f4;
 	                    font-weight: bold;
 	                    white-space: nowrap;
-	                    height: 0.5cm; /* 헤더 높이를 0.5cm로 고정 */
+	                    height: 0.5cm;
 	                }
 	                td {
-	                    height: calc((17cm - 0.5cm) / 32); /* 데이터 행 높이를 동적으로 계산 */
-	                    //데이터 굵은 고딕체로 인쇄
+	                    height: calc((17cm - 0.5cm) / 32);
 	                    font-weight: bold;
-    					font-family: Arial, sans-serif;
+	                    font-family: Arial, sans-serif;
 	                }
 	                .graph-container {
 	                    text-align: center;
-	                    height: 8cm; /* 그래프 높이를 8cm로 고정 */
+	                    height: 7cm;
+	                    margin-top: 0.5cm;
 	                }
 	                .graph-container img {
-	                    max-height: 100%;
+	                    max-height: 90%;
 	                    max-width: 100%;
 	                }
 	            </style>
 	        </head>
 	        <body>
-	            <h1 style="font-size: 16px; margin-bottom: 10px;">${window.queryType || "조회된 테이블 데이터"}</h1>
+	            <div class="main-title">콜센터 통계</div> <!-- ✅ 중앙 정렬, 크고 굵게 -->
+	            <div class="sub-title">${window.queryType || "조회 결과"}</div> <!-- ✅ 좌측 정렬, 중간 크기 -->
 	            ${table.outerHTML}
 	            ${graphImage ? `
 	            <div class="graph-container">
@@ -168,7 +190,6 @@ document.addEventListener("DOMContentLoaded", function () {
 	
 	    printWindow.document.close();
 	}
-	
 	
 	
     // "수정" 버튼 클릭 이벤트
@@ -248,17 +269,17 @@ document.addEventListener("DOMContentLoaded", function () {
                             const chatAcptCall = parseInt(updatedData["chatAcptCall"]);
                             const chattingIn = parseInt(updatedData["chattingIn"]);
                             const chattingAcpt = parseInt(updatedData["chattingAcpt"]);
-                            const privateIn = parseInt(updatedData["privateIn"]);
+                            const innerAcpt = parseInt(updatedData["innerAcpt"]);
                             const onlineAcptCall = parseInt(updatedData["onlineAcptCall"]);
                             const faxAcpt = parseInt(updatedData["faxAcpt"]);
-                            const innerAcpt = parseInt(updatedData["innerAcpt"]);
+                            
 
                             // 계산된 값
                             const manResRate = manInCall > 0 ? ((manResCall / manInCall) * 100).toFixed(1) : "0.0";
                             const totalInCall = manInCall + voiceInCall + chatInCall + chattingIn;
         					const totalResCall = manResCall + voiceInCall + chatInCall + chattingIn;
                             const totalResRate = totalInCall > 0 ? ((totalResCall / totalInCall) * 100).toFixed(1) : "0.0";
-                            const totalAcptCall = manAcptCall + voiceAcptCall + chatAcptCall + chattingAcpt + privateIn + onlineAcptCall + faxAcpt + innerAcpt;
+                            const totalAcptCall = manAcptCall + voiceAcptCall + chatAcptCall + chattingAcpt + onlineAcptCall + faxAcpt + innerAcpt;
                             const totalAcptRate = totalResCall > 0 ? ((totalAcptCall / totalResCall) * 100).toFixed(1) : "0.0";
 
                             // 테이블 업데이트
@@ -276,10 +297,10 @@ document.addEventListener("DOMContentLoaded", function () {
 						        <td data-editable="true" data-field="chatAcptCall">${chatAcptCall}</td>
 						        <td data-editable="true" data-field="chattingIn">${chattingIn}</td>
 						        <td data-editable="true" data-field="chattingAcpt">${chattingAcpt}</td>
-						        <td data-editable="true" data-field="privateIn">${privateIn}</td>
+						        <td data-editable="true" data-field="innerAcpt">${innerAcpt}</td>
 						        <td data-editable="true" data-field="onlineAcptCall">${onlineAcptCall}</td>
 						        <td data-editable="true" data-field="faxAcpt">${faxAcpt}</td>
-						        <td data-editable="true" data-field="innerAcpt">${innerAcpt}</td>
+						        
 						        <td>${totalInCall}</td>
 						        <td>${totalResCall}</td>
 						        <td>${totalResRate}%</td>
@@ -356,19 +377,18 @@ document.addEventListener("DOMContentLoaded", function () {
 	            chatAcptCall: parseInt(cells[8].textContent.trim()) || 0,
 	            chattingIn: parseInt(cells[9].textContent.trim()) || 0,
 	            chattingAcpt: parseInt(cells[10].textContent.trim()) || 0,
-	            privateIn: parseInt(cells[11].textContent.trim()) || 0,
+	            innerAcpt: parseInt(cells[11].textContent.trim()) || 0,
 	            onlineAcptCall: parseInt(cells[12].textContent.trim()) || 0,
 	            faxAcpt: parseInt(cells[13].textContent.trim()) || 0,
-	            innerAcpt: parseInt(cells[14].textContent.trim()) || 0,
-	            totalInCall: parseInt(cells[15].textContent.trim()) || 0,
-	            totalResCall: parseInt(cells[16].textContent.trim()) || 0,
-	            totalResRate: cells[17].textContent.trim(),
-	            totalAcptCall: parseInt(cells[18].textContent.trim()) || 0,
-	            totalAcptRate: cells[19].textContent.trim(), 
+	            totalInCall: parseInt(cells[14].textContent.trim()) || 0,
+	            totalResCall: parseInt(cells[15].textContent.trim()) || 0,
+	            totalResRate: cells[16].textContent.trim(),
+	            totalAcptCall: parseInt(cells[17].textContent.trim()) || 0,
+	            totalAcptRate: cells[18].textContent.trim(), 
 	        };
 	        tableData.push(rowData);
 	    });
-	
+
 	    // 서버로 데이터 전송
 	    fetch("/api/statistics/excelDownload", {
 	        method: "POST",
@@ -403,8 +423,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	});
 	
 	// 그래프 생성 함수
-	function generateGraph() {
-		
+	async function generateGraph() {
 	    const tbody = document.getElementById("data-body");
 	    const rows = Array.from(tbody.querySelectorAll("tr"));
 	
@@ -412,45 +431,72 @@ document.addEventListener("DOMContentLoaded", function () {
 	    const totalInCall = [];
 	    const totalResCall = [];
 	    const totalAcptCall = [];
-	    
-	    // 선택된 체크박스 데이터만 수집
+	    const yearChangeDates = [];
+
 	    rows.forEach(row => {
 	        const checkbox = row.querySelector("input[type='checkbox']");
 	        if (checkbox && checkbox.checked) {
 	            const dateCell = row.querySelector("td");
 	            if (!dateCell) return;
-	
+
 	            const date = dateCell.textContent.trim();
-	            const inCall = parseInt(row.children[15].textContent) || 0;
-	            const resCall = parseInt(row.children[16].textContent) || 0;
-	            const acptCall = parseInt(row.children[18].textContent) || 0;
-	
+	            const inCall = parseInt(row.children[14]?.textContent) || 0;
+	            const resCall = parseInt(row.children[15]?.textContent) || 0;
+	            const acptCall = parseInt(row.children[17]?.textContent) || 0;
+
 	            labels.push(date);
 	            totalInCall.push(inCall);
 	            totalResCall.push(resCall);
 	            totalAcptCall.push(acptCall);
+	
+	            if (/^\d{4}0101$/.test(date) || /^\d{4}01$/.test(date)) {
+	                yearChangeDates.push(date);
+	            }
 	        }
 	    });
-	    
-	    // 그래프 컨테이너 설정
+	
+	    let annotationPlugin = window['chartjs-plugin-annotation'];
+	    if (annotationPlugin) {
+	        Chart.register(annotationPlugin);
+	        console.log("✅ Chart Annotation 플러그인 등록 완료!");
+	    } else {
+	        console.error("🚨 Chart Annotation 플러그인을 찾을 수 없습니다. HTML <script> 태그를 확인하세요.");
+	        return;
+	    }
+		
 	    let graphContainer = document.getElementById("graphContainer");
-	    graphContainer.innerHTML = `<canvas id="lineGraph" style="height: 20cm;"></canvas>`; // 높이를 고정
+	    graphContainer.innerHTML = `<canvas id="lineGraph" style="height: 20cm;"></canvas>`; 
 	    
-	    const cmToPx = 37.8; // cm to px 변환 기준
+	    const cmToPx = 37.8;
 	    const lineGraph = document.getElementById('lineGraph');
-	    
-	    // 스타일과 실제 크기 동기화
 	    lineGraph.style.height = '15cm';
 	    lineGraph.height = 15 * cmToPx;
 	
 	    const ctx = lineGraph.getContext("2d");
 	
-	    // 기존 그래프 제거
 	    if (window.barChart) {
 	        window.barChart.destroy();
 	    }
+		
+	    // ✅ 세로선 설정
+	    const annotations = {};
+	    yearChangeDates.forEach(date => {
+	        annotations[`line${date}`] = {
+	            type: 'line',
+	            xMin: date,
+	            xMax: date,
+	            borderColor: 'gray',
+	            borderWidth: 2,
+	            borderDash: [5, 5],
+	            label: {
+	                display: true,
+	                content: '연도 변경',
+	                position: 'top'
+	            }
+	        };
+	    });
 	
-	    // 새로운 선형 그래프 생성
+	    // ✅ 새로운 선형 그래프 생성 (x축, y축 라벨을 굵고 선명하게 설정)
 	    window.barChart = new Chart(ctx, {
 	        type: "line",
 	        data: {
@@ -460,29 +506,41 @@ document.addEventListener("DOMContentLoaded", function () {
 	                    label: "총 인입",
 	                    data: totalInCall,
 	                    borderColor: "blue",
+	                    borderWidth: 2,
 	                    fill: false,
-	                    tension: 0.1, // 곡선 매끄럽게
+	                    tension: 0.1,
+	                    pointRadius: 3,
+	                    pointBackgroundColor: "blue",
 	                },
 	                {
 	                    label: "총 응대",
 	                    data: totalResCall,
 	                    borderColor: "green",
+	                    borderWidth: 2,
 	                    fill: false,
 	                    tension: 0.1,
+	                    pointRadius: 3,
+	                    pointBackgroundColor: "green",
 	                },
 	                {
 	                    label: "총 접수",
 	                    data: totalAcptCall,
 	                    borderColor: "red",
+	                    borderWidth: 2,
 	                    fill: false,
 	                    tension: 0.1,
+	                    pointRadius: 3,
+	                    pointBackgroundColor: "red",
 	                },
 	            ],
 	        },
 	        options: {
 	            responsive: true,
-	            maintainAspectRatio: false, // 비율 유지하지 않음
+	            maintainAspectRatio: false,
 	            plugins: {
+	                annotation: {
+	                    annotations: annotations
+	                },
 	                tooltip: {
 	                    callbacks: {
 	                        label: function (context) {
@@ -491,30 +549,60 @@ document.addEventListener("DOMContentLoaded", function () {
 	                        },
 	                    },
 	                },
+	                legend: {
+	                    labels: {
+	                        font: {
+	                            size: 16, // ✅ 글자 크기 크게
+	                            weight: 'bold', // ✅ 글씨 굵게
+	                        },
+	                        color: "#000" // ✅ 검정색 글씨
+	                    }
+	                }
 	            },
 	            scales: {
 	                x: {
 	                    title: {
 	                        display: true,
 	                        text: "날짜",
+	                        font: {
+	                            weight: 'bold', // ✅ x축 제목을 굵게
+	                            size: 18,
+	                        },
+	                        color: "#000" // ✅ 제목 색상을 검정색으로 변경
 	                    },
 	                    ticks: {
-	                        autoSkip: true, // 자동으로 간격 조정
-	                        maxRotation: 0, // 회전하지 않음
+	                        autoSkip: true,
+	                        maxRotation: 0,
+	                        font: {
+	                            weight: 'bold', // ✅ x축 데이터(202501, 202502 등)를 굵게
+	                            size: 18,       // ✅ 글씨 크기 키우기
+	                        },
+	                        color: "#000" // ✅ x축 숫자를 검정색으로 변경
 	                    },
 	                },
 	                y: {
 	                    title: {
 	                        display: true,
 	                        text: "건수",
+	                        font: {
+	                            weight: 'bold', // ✅ y축 제목을 굵게
+	                            size: 18,
+	                        },
+	                        color: "#000" // ✅ 제목 색상을 검정색으로 변경
 	                    },
 	                    beginAtZero: true,
+	                    ticks: {
+	                        font: {
+	                            weight: 'bold', // ✅ y축 데이터(900, 800, 700 등)를 굵게
+	                            size: 18,       // ✅ 글씨 크기 키우기
+	                        },
+	                        color: "#000" // ✅ y축 숫자를 검정색으로 변경
+	                    },
 	                },
 	            },
-	        },
+	        }
 	    });
 	}
 	
 	
-    
 });

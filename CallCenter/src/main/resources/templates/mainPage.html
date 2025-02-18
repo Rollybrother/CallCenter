@@ -6,6 +6,7 @@
     <title>콜센터 통계</title>
     <link rel="stylesheet" href="/mainPage.css">
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script src="/js/chartjs-plugin-annotation.min.js"></script>
 </head>
 <body>
     <header>
@@ -32,10 +33,9 @@
                         <th colspan="2">보이스봇</th>
                         <th colspan="2">챗봇</th>
 						<th colspan="2">채팅</th>
-						<th rowspan="2">개별인입</th>
+						<th rowspan="2">내선 접수</th>
                         <th rowspan="2">온라인 접수</th>
 						<th rowspan="2">팩스 접수</th>
-						<th rowspan="2">내선콜 접수</th>
                         <th colspan="5">합계</th>
                     </tr>
                     <tr>
@@ -70,7 +70,6 @@
 		
     </main>
 	
-	
 	<!-- 모달 창 -->
 	<div id="modal" class="modal hidden">
 	    <div class="modal-content">
@@ -88,10 +87,9 @@
 	            <label>챗봇 접수: <input type="number" id="chatAcptCall" name="chatAcptCall" required></label>
 				<label>채팅 인입: <input type="number" id="chattingIn" name="chattingIn" required></label>
 				<label>채팅 접수: <input type="number" id="chattingAcpt" name="chattingAcpt" required></label>
-				<label>개별 인입: <input type="number" id="privateIn" name="privateIn" required></label>
+				<label>내선 접수: <input type="number" id="innerAcpt" name="innerAcpt" required></label>
 	            <label>온라인 접수: <input type="number" id="onlineAcptCall" name="onlineAcptCall" required></label>
 				<label>팩스 접수: <input type="number" id="faxAcpt" name="faxAcpt" required></label>
-				<label>내선콜 접수: <input type="number" id="innerAcpt" name="innerAcpt" required></label>
 				<button type="submit">저장</button>
 	            <button type="button" id="closeModal">닫기</button>
 	        </form>

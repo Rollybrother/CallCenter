@@ -59,9 +59,9 @@ public class StatVO {
 	private int chattingAcpt=0;
 	//채팅 접수
 	
-	@Column(name = "privateIn")
-	private int privateIn=0;
-	//개별인입
+	@Column(name = "innerAcpt")
+	private int innerAcpt=0;
+	//내선 접수
 	
 	@Column(name = "onlineAcptCall")
 	private int onlineAcptCall=0;
@@ -70,10 +70,6 @@ public class StatVO {
 	@Column(name = "faxAcpt")
 	private int faxAcpt=0;
 	//팩스 접수
-	
-	@Column(name = "innerAcpt")
-	private int innerAcpt=0;
-	//내선콜 접수
 	
 	@Column(name = "date")
 	private String date;

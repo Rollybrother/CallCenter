@@ -24,10 +24,9 @@ public interface StatRepository extends JpaRepository<StatVO, Integer> {
 		       "SUM(s.chatAcptCall), " +
 		       "SUM(s.chattingIn), " +
 		       "SUM(s.chattingAcpt), " +
-		       "SUM(s.privateIn), " +
+		       "SUM(s.innerAcpt), " +
 		       "SUM(s.onlineAcptCall), " +
-		       "SUM(s.faxAcpt), " +
-		       "SUM(s.innerAcpt)) " + 
+		       "SUM(s.faxAcpt)) " +
 		       "FROM StatVO s " +
 		       "WHERE s.date BETWEEN :start AND :end " +
 		       "GROUP BY SUBSTRING(s.date, 1, 6) " +

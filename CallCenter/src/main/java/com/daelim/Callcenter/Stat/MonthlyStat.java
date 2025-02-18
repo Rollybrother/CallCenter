@@ -13,13 +13,13 @@ public class MonthlyStat {
     private Long chatAcptCall;
 	private Long chattingIn;
 	private Long chattingAcpt;
-	private Long privateIn;
+	private Long innerAcpt;
     private Long onlineAcptCall;
 	private Long faxAcpt;
-	private Long innerAcpt;
+
 
     public MonthlyStat(String month, Long manInCall, Long manResCall, Long manAcptCall, Long voiceInCall, Long voiceAcptCall, Long chatInCall, Long chatAcptCall, 
-    		Long chattingIn,Long chattingAcpt,Long privateIn,Long onlineAcptCall,Long faxAcpt,Long innerAcpt) {
+    		Long chattingIn,Long chattingAcpt,Long innerAcpt,Long onlineAcptCall,Long faxAcpt) {
         this.month = month;
         this.manInCall = manInCall;
         this.manResCall = manResCall;
@@ -30,19 +30,10 @@ public class MonthlyStat {
         this.chatAcptCall = chatAcptCall;
         this.chattingIn = chattingIn;
         this.chattingAcpt = chattingAcpt;
-        this.privateIn = privateIn;
         this.onlineAcptCall = onlineAcptCall;
         this.faxAcpt = faxAcpt;
         this.innerAcpt = innerAcpt;
     }
-    
-    public Long getPrivateIn() {
-		return privateIn;
-	}
-
-	public void setPrivateIn(Long privateIn) {
-		this.privateIn = privateIn;
-	}
 
 	// Getter 및 Setter
     public String getMonth() {

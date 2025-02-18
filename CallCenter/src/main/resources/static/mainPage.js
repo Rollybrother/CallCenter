@@ -51,10 +51,9 @@ document.addEventListener("DOMContentLoaded", function () {
             chatAcptCall = 0,
             chattingIn = 0,
             chattingAcpt = 0,
-            privateIn = 0,
+            innerAcpt = 0,
             onlineAcptCall = 0,
-            faxAcpt = 0,
-            innerAcpt = 0;
+            faxAcpt = 0;
 
         rows.forEach(row => {
             manInCall += parseInt(row.children[1].textContent) || 0;
@@ -66,15 +65,14 @@ document.addEventListener("DOMContentLoaded", function () {
             chatAcptCall += parseInt(row.children[8].textContent) || 0;
             chattingIn += parseInt(row.children[9].textContent) || 0;
             chattingAcpt += parseInt(row.children[10].textContent) || 0;
-            privateIn += parseInt(row.children[11].textContent) || 0;
+            innerAcpt += parseInt(row.children[11].textContent) || 0;
             onlineAcptCall += parseInt(row.children[12].textContent) || 0;
             faxAcpt += parseInt(row.children[13].textContent) || 0;
-            innerAcpt += parseInt(row.children[14].textContent) || 0;
         });
 		
         const totalInCall = manInCall + voiceInCall + chatInCall + chattingIn;
         const totalResCall = manResCall + voiceInCall + chatInCall + chattingIn; // Assuming voice and chat count as responses
-        const totalAcptCall = manAcptCall + voiceAcptCall + chatAcptCall + chattingAcpt + privateIn + onlineAcptCall + faxAcpt + innerAcpt;
+        const totalAcptCall = manAcptCall + voiceAcptCall + chatAcptCall + chattingAcpt + onlineAcptCall + faxAcpt + innerAcpt;
 		
         // 백분율 계산
         const manResRate = manInCall > 0 ? ((manResCall / manInCall) * 100).toFixed(1) : "0.0";
@@ -95,10 +93,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 <td>${chatAcptCall}</td>
             	<td>${chattingIn}</td>
             	<td>${chattingAcpt}</td>
-            	<td>${privateIn}</td>
+            	<td>${innerAcpt}</td>
                 <td>${onlineAcptCall}</td>
             	<td>${faxAcpt}</td>
-            	<td>${innerAcpt}</td>
                 <td>${totalInCall}</td>
                 <td>${totalResCall}</td>
                 <td>${totalResRate}%</td>
@@ -188,10 +185,9 @@ document.addEventListener("DOMContentLoaded", function () {
             chatAcptCall,
             chattingIn,
             chattingAcpt,
-            privateIn,
+            innerAcpt,
             onlineAcptCall,
             faxAcpt,
-            innerAcpt,
         } = item;
 
         // 계산된 값
@@ -199,7 +195,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const totalInCall = manInCall + voiceInCall + chatInCall + chattingIn;
         const totalResCall = manResCall + voiceInCall + chatInCall + chattingIn;
         const totalResRate = totalInCall > 0 ? ((totalResCall / totalInCall) * 100).toFixed(1) : "0.0";
-        const totalAcptCall = manAcptCall + voiceAcptCall + chatAcptCall + chattingAcpt + privateIn + onlineAcptCall + faxAcpt + innerAcpt;
+        const totalAcptCall = manAcptCall + voiceAcptCall + chatAcptCall + chattingAcpt + onlineAcptCall + faxAcpt + innerAcpt;
         const totalAcptRate = totalResCall > 0 ? ((totalAcptCall / totalResCall) * 100).toFixed(1) : "0.0";
 
         // 데이터 행 추가
@@ -218,10 +214,9 @@ document.addEventListener("DOMContentLoaded", function () {
 			        <td data-editable="true" data-field="chatAcptCall">${chatAcptCall}</td>
 			        <td data-editable="true" data-field="chattingIn">${chattingIn}</td>
 			        <td data-editable="true" data-field="chattingAcpt">${chattingAcpt}</td>
-			        <td data-editable="true" data-field="privateIn">${privateIn}</td>
+			        <td data-editable="true" data-field="innerAcpt">${innerAcpt}</td>
 			        <td data-editable="true" data-field="onlineAcptCall">${onlineAcptCall}</td>
 			        <td data-editable="true" data-field="faxAcpt">${faxAcpt}</td>
-			        <td data-editable="true" data-field="innerAcpt">${innerAcpt}</td>
 			        <td>${totalInCall}</td>
 			        <td>${totalResCall}</td>
 			        <td>${totalResRate}%</td>
@@ -270,10 +265,9 @@ document.addEventListener("DOMContentLoaded", function () {
             	chatAcptCall,
             	chattingIn,
             	chattingAcpt,
-            	privateIn,
+            	innerAcpt,
             	onlineAcptCall,
             	faxAcpt,
-            	innerAcpt,
 	        } = item;
 	
 	        // 계산된 값
@@ -281,7 +275,7 @@ document.addEventListener("DOMContentLoaded", function () {
        	    const totalInCall = manInCall + voiceInCall + chatInCall + chattingIn;
         	const totalResCall = manResCall + voiceInCall + chatInCall + chattingIn;
         	const totalResRate = totalInCall > 0 ? ((totalResCall / totalInCall) * 100).toFixed(1) : "0.0";
-        	const totalAcptCall = manAcptCall + voiceAcptCall + chatAcptCall + chattingAcpt + privateIn + onlineAcptCall + faxAcpt + innerAcpt;
+        	const totalAcptCall = manAcptCall + voiceAcptCall + chatAcptCall + chattingAcpt + onlineAcptCall + faxAcpt + innerAcpt;
         	const totalAcptRate = totalResCall > 0 ? ((totalAcptCall / totalResCall) * 100).toFixed(1) : "0.0";
 	
 	        // 데이터 행 추가
@@ -300,10 +294,9 @@ document.addEventListener("DOMContentLoaded", function () {
 				        <td data-editable="true" data-field="chatAcptCall">${chatAcptCall}</td>
 				        <td data-editable="true" data-field="chattingIn">${chattingIn}</td>
 				        <td data-editable="true" data-field="chattingAcpt">${chattingAcpt}</td>
-				        <td data-editable="true" data-field="privateIn">${privateIn}</td>
+				        <td data-editable="true" data-field="innerAcpt">${innerAcpt}</td>
 				        <td data-editable="true" data-field="onlineAcptCall">${onlineAcptCall}</td>
 				        <td data-editable="true" data-field="faxAcpt">${faxAcpt}</td>
-				        <td data-editable="true" data-field="innerAcpt">${innerAcpt}</td>
 				        <td>${totalInCall}</td>
 				        <td>${totalResCall}</td>
 				        <td>${totalResRate}%</td>
@@ -329,7 +322,6 @@ document.addEventListener("DOMContentLoaded", function () {
 		    deleteButton.style.display = "none"; // 버튼 숨기기
 		}
 	}
-
 
 	// 통계 등록 버튼 클릭 시 모달 표시
     document.getElementById("registerBtn").addEventListener("click", function() {
@@ -441,8 +433,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("chatAcptCall").value = data.countChat;
                 document.getElementById("onlineAcptCall").value = data.countInternet;
                 document.getElementById("faxAcpt").value = data.countFax;
-                document.getElementById("privateIn").value = data.countPrivateIn;
-                document.getElementById("chattingAcpt").value = data.countChatting;
+                document.getElementById("chattingAcpt").value = data.countChatting;    
+                document.getElementById("innerAcpt").value = data.countInnerAcpt;
             })
             .catch((error) => {
                 console.error("Error:", error);
@@ -476,6 +468,4 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 	
-    
-    
 });

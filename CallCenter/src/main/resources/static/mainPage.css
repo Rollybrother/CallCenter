@@ -38,14 +38,16 @@ main {
 
 #data-table table {
     width: 100%;
+    height: 90;
     border-collapse: collapse;
     margin-top: 20px;
+    border: 3px solid black;
 }
 
 #data-table th, #data-table td {
-    border: 1px solid #ddd;
     padding: 8px;
     text-align: center;
+    border: 3px solid black;
 }
 
 #data-table th {
@@ -155,21 +157,31 @@ main {
 }
 
 @media print {
+ 	
+ 	@page {
+        size: A4;
+        margin: 1.2cm; /* 기존보다 여백 줄이기 */
+    }
+    
     #data-table table {
-        height: 17cm; /* 테이블 전체 높이를 17cm로 고정 */
+        height: 16cm; /* 테이블 전체 높이를 17cm로 고정 */
         overflow: hidden; /* 초과 데이터 숨김 */
+        border: 3px solid black;
     }
 
     #data-table th {
         height: 1cm; /* 컬럼 헤더 높이를 1cm로 고정 */
+        font-weight: bold;
+        border: 3px solid black;
     }
 
     #data-table td {
-        height: calc((17cm - 1cm) / 32); /* 데이터 행 높이를 동적으로 설정 (최대 32개 데이터) */
+        height: calc((16cm - 1cm) / 32); /* 데이터 행 높이를 동적으로 설정 (최대 32개 데이터) */
+        border: 3px solid black;
     }
 
     #graphContainer {
-        height: 8cm; /* 그래프 높이를 8cm로 고정 */
+        height: 6cm; /* 그래프 높이를 8cm로 고정 */
     }
     
 }
