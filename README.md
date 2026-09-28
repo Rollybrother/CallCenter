@@ -1,21 +1,21 @@
 # CallCenter — Spring Boot
 
-대림통상 콜센터 통계 프로그램입니다. **Java 17 / Spring Boot 3.5.16 / Gradle 8.7**을 사용하며, 내장 Tomcat이 포함된 실행 JAR로 구동합니다. 외부 Tomcat, WAR 배포, JSP 설정은 필요하지 않습니다. 기존 Thymeleaf 화면과 로그인·통계·접수 집계·엑셀 다운로드 URL을 유지합니다.
+대림통상 콜센터 통계 프로그램입니다. **Java 21 / Spring Boot 3.5.16 / Gradle 8.7**을 사용하며, 내장 Tomcat이 포함된 실행 JAR로 구동합니다. 외부 Tomcat, WAR 배포, JSP 설정은 필요하지 않습니다. 기존 Thymeleaf 화면과 로그인·통계·접수 집계·엑셀 다운로드 URL을 유지합니다.
 
 ## STS4에서 가져오기 / Boot Dashboard 표시
 
 기존 저장소는 `CallCenter/` 안에 다시 Gradle 프로젝트가 들어 있었습니다. 이제 **저장소 최상위 폴더**에 `build.gradle`, `settings.gradle`, `gradlew`, `src/`가 있습니다.
 
-1. 기존 작업 내용이 있다면 먼저 보관하고 `master`를 Pull 합니다.
+1. 이 ZIP을 압축 해제하거나 기존 Git 저장소의 `master`를 Pull 합니다. 기존 작업 내용이 있다면 먼저 보관합니다.
 2. 이전 경로로 가져온 CallCenter 프로젝트가 STS4에 있다면 Package Explorer에서 해당 프로젝트를 **Delete** 합니다. **Delete project contents on disk는 체크하지 마세요.** 로컬 파일은 남겨둡니다.
 3. **File → Import → Gradle → Existing Gradle Project → Next**를 선택합니다.
 4. **Project root directory**에 `build.gradle`이 바로 보이는 저장소 최상위 폴더를 지정합니다. 예전 안쪽 `CallCenter` 폴더를 선택하지 않습니다.
-5. Gradle distribution은 **Gradle Wrapper**, Gradle JVM은 **JDK 17**을 선택하고 **Finish**를 누릅니다.
+5. Gradle distribution은 **Gradle Wrapper**, Gradle JVM은 **JDK 21**을 선택하고 **Finish**를 누릅니다.
 6. 의존성 다운로드가 끝나면 프로젝트 우클릭 → **Gradle → Refresh Gradle Project**를 실행합니다. Problems 창에 빌드 오류가 없어야 합니다.
 7. **Window → Show View → Other… → Spring → Boot Dashboard**를 열고 `local`을 펼칩니다. 검색어/필터가 있다면 해제합니다.
 8. `CallCenter`를 선택해 시작하거나 `src/main/java/com/daelim/Callcenter/CallCenterApplication.java` 우클릭 → **Run As → Spring Boot App**을 선택합니다.
 
-STS4의 **Window → Preferences → Java → Installed JREs**에도 JDK 17이 등록되어 있어야 합니다. 이미 실행 중인 다른 프로그램이 8080 포트를 사용하면 아래 설정에서 `server.port=8081` 등으로 변경합니다. 메뉴 이름은 STS4 버전에 따라 조금 다를 수 있습니다.
+STS4의 **Window → Preferences → Java → Installed JREs**에도 JDK 21이 등록되어 있어야 합니다. 이미 실행 중인 다른 프로그램이 8080 포트를 사용하면 아래 설정에서 `server.port=8081` 등으로 변경합니다. 메뉴 이름은 STS4 버전에 따라 조금 다를 수 있습니다.
 
 > STS4 화면 자체는 이 저장소의 자동 테스트 대상이 아닙니다. Boot Dashboard는 Git 저장소 등록만으로 표시되지 않으며, Java/Gradle 프로젝트 가져오기와 의존성 동기화가 끝나야 합니다.
 
@@ -69,7 +69,7 @@ Linux/macOS:
 ./gradlew bootRun
 ```
 
-JAR 실행 (JDK/Java 17):
+JAR 실행 (JDK/Java 21):
 
 ```bash
 java -jar build/libs/callcenter.jar
