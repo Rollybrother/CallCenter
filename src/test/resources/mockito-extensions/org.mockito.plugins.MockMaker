@@ -1,0 +1,2 @@
+# These integration tests do not need inline/final mocking or JVM agent attachment.
+mock-maker-subclass

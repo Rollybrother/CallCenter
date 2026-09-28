@@ -1,0 +1,12 @@
+# Copy to config/application-local.properties and fill in the existing DB settings.
+# This file is loaded relative to the project/JAR working directory.
+# Use jdbc:mariadb:, not jdbc:log4jdbc:mysql:. Use & rather than &amp; in URLs.
+spring.datasource.url=jdbc:mariadb://YOUR_MARIADB_HOST:3306/callcenter
+spring.datasource.username=YOUR_MARIADB_USER
+spring.datasource.password=YOUR_MARIADB_PASSWORD
+
+spring.second-datasource.url=jdbc:as400://YOUR_DB2_HOST/DAELIMDB
+spring.second-datasource.username=YOUR_DB2_USER
+spring.second-datasource.password=YOUR_DB2_PASSWORD
+
+server.port=8080
