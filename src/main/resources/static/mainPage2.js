@@ -36,165 +36,80 @@ document.addEventListener("DOMContentLoaded", function () {
     buttonGroup.appendChild(printButton);
 
     // 버튼 그룹을 filter-section 아래에 추가
-    filterSection.insertAdjacentElement("afterend", buttonGroup);
+    document.getElementById("table-actions").appendChild(buttonGroup);
 
     // "인쇄" 버튼 클릭 이벤트
     printButton.addEventListener("click", function () {
         printTableAndGraph(); // 테이블 인쇄 함수 호출
     });
 
-    // 테이블 및 그래프 인쇄 함수
-	function printTableAndGraph() {
-		
-	    const table = document.querySelector("#data-table table").cloneNode(true);
-	    const thead = table.querySelector("thead");
-	    const tbody = table.querySelector("tbody");
-	
-	    // 체크박스가 체크된 행만 유지
-	    const rows = Array.from(tbody.querySelectorAll("tr"));
-	    rows.forEach(row => {
-	        const checkbox = row.querySelector("input[type='checkbox']");
-	        if (!checkbox || !checkbox.checked) {
-	            row.remove();
-	        }
-	    });
-	
-	    // 합계 행 유지
-	    const summaryRow = document.getElementById("summary-row");
-	    if (summaryRow) {
-	        tbody.appendChild(summaryRow.cloneNode(true));
-	    }
-	
-	    // 빈 행 추가 (31개 미만인 경우)
-	    const rowCount = tbody.querySelectorAll("tr").length;
-	    const totalRowsNeeded = 31;
-	    const colCount = 20;
-	
-	    if (rowCount < totalRowsNeeded) {
-	        for (let i = 0; i < totalRowsNeeded - rowCount; i++) {
-	            const emptyRow = document.createElement("tr");
-	            for (let j = 0; j < colCount; j++) {
-	                const emptyCell = document.createElement("td");
-	                emptyCell.textContent = "";
-	                emptyRow.appendChild(emptyCell);
-	            }
-	            tbody.appendChild(emptyRow);
-	        }
-	    }
-	
-	    // 체크박스 제거
-	    thead.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
-	        const cell = checkbox.closest("th");
-	        if (cell) {
-	            cell.textContent = cell.textContent.trim();
-	        }
-	    });
-	
-	    tbody.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
-	        const cell = checkbox.closest("td");
-	        if (cell) {
-	            cell.textContent = cell.textContent.trim();
-	        }
-	    });
-	
-	    // 그래프 복제
-	    const graphCanvas = document.getElementById("lineGraph");
-	    const graphImage = graphCanvas ? graphCanvas.toDataURL() : null;
-	
-	    // 새로운 창 열기
-	    const printWindow = window.open("", "_blank");
-	    printWindow.document.write(`
-	        <html>
-	        <head>
-	            <title> </title>
-	            <style>
-	                @page {
-	                    size: A4;
-	                    margin: 2cm;
-	                }
-	                body {
-	                    font-family: Arial, sans-serif;
-	                    margin: 0;
-	                    padding: 0;
-	                    text-align: center;
-	                }
-	                /* ✅ 메인 타이틀 (콜센터 통계) - 중앙, 크고 굵게 */
-	                .main-title {
-	                    font-size: 24px; /* 크기 증가 */
-	                    font-weight: bold;
-	                    text-align: center;
-	                    margin-bottom: 1cm; /* 간격 추가 */
-	                }
-	                /* ✅ 서브 타이틀 (일별조회 결과) - 좌측 상단, 중간 크기 */
-	                .sub-title {
-	                    font-size: 14px; /* 중간 크기 */
-	                    font-weight: bold;
-	                    text-align: left; /* 좌측 정렬 */
-	                    margin-bottom: 0.5cm;
-	                }
-	                table {
-	                    width: 100%;
-	                    height: 90%;
-	                    border-collapse: collapse;
-	                    margin: 0;
-	                    font-size: 10px;
-	                    height: 16cm;
-	                    border: 3px solid black;
-	                }
-	                th, td {
-	                    border: 3px solid black;
-	                    text-align: center;
-	                    padding: 4px;
-	                }
-	                th {
-	                    background-color: #f4f4f4;
-	                    font-weight: bold;
-	                    white-space: nowrap;
-	                    height: 0.5cm;
-	                }
-	                td {
-	                    height: calc((17cm - 0.5cm) / 32);
-	                    font-weight: bold;
-	                    font-family: Arial, sans-serif;
-	                }
-	                .graph-container {
-	                    text-align: center;
-	                    height: 7cm;
-	                    margin-top: 0.5cm;
-	                }
-	                .graph-container img {
-	                    max-height: 90%;
-	                    max-width: 100%;
-	                }
-	            </style>
-	        </head>
-	        <body>
-	            <div class="main-title">콜센터 통계</div> <!-- ✅ 중앙 정렬, 크고 굵게 -->
-	            <div class="sub-title">${window.queryType || "조회 결과"}</div> <!-- ✅ 좌측 정렬, 중간 크기 -->
-	            ${table.outerHTML}
-	            ${graphImage ? `
-	            <div class="graph-container">
-	                <h2>그래프</h2>
-	                <img src="${graphImage}" alt="그래프 이미지">
-	            </div>
-	            ` : ""}
-	            <script>
-	                window.onload = function() {
-	                    window.print();
-	                    window.onafterprint = function() { window.close(); }
-	                }
-	            </script>
-	        </body>
-	        </html>
-	    `);
-	
-	    printWindow.document.close();
-	}
-	
-	
+    // 조회 표와 그래프를 한 장의 A4 가로 용지에 맞춘다.
+    function printTableAndGraph() {
+        const table = document.querySelector("#data-table table").cloneNode(true);
+        const tbody = table.querySelector("tbody");
+        const rows = Array.from(tbody.querySelectorAll("tr:not(#summary-row)"));
+        const selected = rows.filter(row => row.querySelector(".row-checkbox")?.checked);
+
+        // 선택한 행이 있으면 선택분만, 없으면 조회 결과 전체를 인쇄한다.
+        if (selected.length) {
+            rows.forEach(row => { if (!row.querySelector(".row-checkbox")?.checked) row.remove(); });
+        }
+        // 표를 복제할 때 합계 행도 함께 복제되므로 다시 추가하지 않는다.
+        table.querySelectorAll("input[type='checkbox']").forEach(checkbox => checkbox.remove());
+
+        const graphCanvas = document.getElementById("lineGraph");
+        const graphImage = graphCanvas ? graphCanvas.toDataURL("image/png") : null;
+        const printWindow = window.open("", "_blank");
+        if (!printWindow) {
+            alert("인쇄 창을 열 수 없습니다. 팝업 차단을 해제해 주세요.");
+            return;
+        }
+        printWindow.document.write(`
+            <!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><title>콜센터 통계 인쇄</title>
+            <style>
+                @page { size: A4 landscape; margin: 7mm; }
+                html, body { margin: 0; padding: 0; }
+                #printPage { position: relative; width: 280mm; height: 194mm; overflow: hidden; page-break-after: avoid; break-after: avoid; }
+                #printContent { position: absolute; top: 0; left: 0; width: 1120px; transform-origin: top left; font-family: "Malgun Gothic", Arial, sans-serif; color: #172b41; }
+                .main-title { text-align: center; font-size: 21px; font-weight: 800; margin: 0 0 8px; }
+                .sub-title { font-size: 12px; font-weight: 700; margin: 0 0 8px; }
+                table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 10px; line-height: 1.15; }
+                th, td { border: 1px solid #344a59; text-align: center; padding: 3px 2px; white-space: nowrap; overflow: hidden; }
+                th { background: #edf5f5; font-weight: 800; }
+                td { font-weight: 600; }
+                th:first-child, td:first-child { width: 94px; }
+                #summary-row { background: #e4f2ed; font-weight: 800; }
+                .graph-title { font-size: 12px; font-weight: 800; text-align: center; margin: 12px 0 2px; }
+                .graph-image { display: block; width: 100%; height: 220px; object-fit: contain; }
+            </style></head><body>
+            <div id="printPage"><div id="printContent">
+                <div class="main-title">콜센터 통계</div>
+                <div class="sub-title">${window.queryType || "조회 결과"}</div>
+                ${table.outerHTML}
+                ${graphImage ? `<div class="graph-title">그래프</div><img class="graph-image" src="${graphImage}" alt="운영 추이">` : ""}
+            </div></div>
+            <script>
+                window.onload = async function () {
+                    await document.fonts.ready;
+                    requestAnimationFrame(function () { requestAnimationFrame(function () {
+                        const page = document.getElementById('printPage');
+                        const content = document.getElementById('printContent');
+                        const scale = Math.min(1,
+                            (page.clientWidth - 8) / content.scrollWidth,
+                            (page.clientHeight - 8) / content.scrollHeight);
+                        content.style.transform = 'scale(' + scale + ')';
+                        window.print();
+                    }); });
+                };
+                window.onafterprint = function () { window.close(); };
+            <\/script></body></html>
+        `);
+        printWindow.document.close();
+    }
+
     // "수정" 버튼 클릭 이벤트
     editButton.addEventListener("click", function () {
-        const checkedRows = document.querySelectorAll("input[type='checkbox']:checked");
+        const checkedRows = document.querySelectorAll("#data-body .row-checkbox:checked");
         if (checkedRows.length === 0) {
             alert("수정할 데이터를 선택해주세요.");
             return;
@@ -326,7 +241,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	
     // "삭제" 버튼 클릭 이벤트
     deleteButton.addEventListener("click", function () {
-        const checkedRows = document.querySelectorAll("input[type='checkbox']:checked");
+        const checkedRows = document.querySelectorAll("#data-body .row-checkbox:checked");
         if (checkedRows.length === 0) {
             alert("삭제할 데이터를 선택해주세요.");
             return;
@@ -465,12 +380,12 @@ document.addEventListener("DOMContentLoaded", function () {
 	    }
 		
 	    let graphContainer = document.getElementById("graphContainer");
-	    graphContainer.innerHTML = `<canvas id="lineGraph" style="height: 20cm;"></canvas>`; 
+	    document.getElementById("graph-plot").innerHTML = `<canvas id="lineGraph"></canvas>`; 
 	    
 	    const cmToPx = 37.8;
 	    const lineGraph = document.getElementById('lineGraph');
-	    lineGraph.style.height = '15cm';
-	    lineGraph.height = 15 * cmToPx;
+	    lineGraph.style.height = '420px';
+	    lineGraph.height = 420;
 	
 	    const ctx = lineGraph.getContext("2d");
 	
@@ -505,32 +420,32 @@ document.addEventListener("DOMContentLoaded", function () {
 	                {
 	                    label: "총 인입",
 	                    data: totalInCall,
-	                    borderColor: "blue",
+	                    borderColor: "#163d50",
 	                    borderWidth: 2,
 	                    fill: false,
 	                    tension: 0.1,
 	                    pointRadius: 3,
-	                    pointBackgroundColor: "blue",
+	                    pointBackgroundColor: "#163d50",
 	                },
 	                {
 	                    label: "총 응대",
 	                    data: totalResCall,
-	                    borderColor: "green",
+	                    borderColor: "#0f9785",
 	                    borderWidth: 2,
 	                    fill: false,
 	                    tension: 0.1,
 	                    pointRadius: 3,
-	                    pointBackgroundColor: "green",
+	                    pointBackgroundColor: "#0f9785",
 	                },
 	                {
 	                    label: "총 접수",
 	                    data: totalAcptCall,
-	                    borderColor: "red",
+	                    borderColor: "#e2a449",
 	                    borderWidth: 2,
 	                    fill: false,
 	                    tension: 0.1,
 	                    pointRadius: 3,
-	                    pointBackgroundColor: "red",
+	                    pointBackgroundColor: "#e2a449",
 	                },
 	            ],
 	        },

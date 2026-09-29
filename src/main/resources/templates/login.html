@@ -1,37 +1,29 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
     <meta charset="UTF-8">
-    <title>로그인</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 | 대림통상 콜센터</title>
     <link href="/login.css" rel="stylesheet">
 </head>
-
-<body class="bg-primary text-light">
-    <div class="container vh-100 d-flex flex-column justify-content-center align-items-center">
-        <div class="text-center mb-4">
-            <h1 id="system-title" class="text-light">대림통상 콜센터 통계</h1>
-        </div>
-        <div class="card p-4 bg-light text-dark shadow-lg" style="max-width: 400px; width: 100%;">
-            <h1 class="text-center text-primary">로그인</h1>
-            <form id="loginForm" action="/loginController/login" method="post">
-                <div class="mb-3">
-                    <label for="id" class="form-label">아이디:</label>
-                    <input type="text" id="id" name="id" class="form-control" required>
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">비밀번호:</label>
-                    <input type="password" id="password" name="password" class="form-control" required>
-                </div>
-                <button type="submit" class="btn btn-primary w-100">로그인</button>
-            </form>
-            <!-- 세션 에러 메시지 표시 -->
-			<p class="text-danger mt-3 text-center" th:if="${error}" th:text="${error}"></p>
-            <p class="mt-3 text-center">계정이 없으신가요? <a href="/loginController/signup" class="text-primary">사용자 등록</a></p>
-        </div>
-    </div>
+<body>
+    <main class="auth-layout">
+        <section class="auth-intro" aria-label="콜센터 소개">
+            <a class="auth-brand" href="/"><span class="brand-mark">D</span><span><strong>DAELIM</strong><small>CALL CENTER</small></span></a>
+            <div class="intro-copy"><span class="eyebrow">OPERATIONS WORKSPACE</span><h1>더 명확하게 보는<br>콜센터 운영 현황</h1><p>상담원과 ALF 채널의 인입·응대·접수 현황을<br>한 곳에서 확인하세요.</p></div>
+            <div class="intro-footer">DAELIM CALL CENTER · STATISTICS</div>
+        </section>
+        <section class="auth-content">
+            <div class="auth-card"><span class="eyebrow">WELCOME BACK</span><h2>로그인</h2><p class="subtitle">계정으로 로그인해 운영 현황을 확인하세요.</p>
+                <form id="loginForm" action="/loginController/login" method="post">
+                    <label for="id">아이디</label><input type="text" id="id" name="id" autocomplete="username" required placeholder="아이디를 입력하세요">
+                    <label for="password">비밀번호</label><input type="password" id="password" name="password" autocomplete="current-password" required placeholder="비밀번호를 입력하세요">
+                    <button type="submit" class="primary-button">로그인 <span aria-hidden="true">→</span></button>
+                </form>
+                <p class="error-message" th:if="${error}" th:text="${error}" role="alert"></p>
+                <p class="auth-link">계정이 없으신가요? <a href="/loginController/signup">사용자 등록</a></p>
+            </div>
+        </section>
+    </main>
 </body>
-
 </html>

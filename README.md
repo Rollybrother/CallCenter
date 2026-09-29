@@ -1,12 +1,20 @@
 # CallCenter — Spring Boot
 
+## 기존 STS4 프로젝트에 이 ZIP 적용하기
+
+이 ZIP의 최상위 폴더는 `CallCenter/`이고, 그 안에 `build.gradle`, `src/`, `config/`가 있습니다. **기존 CallCenter 프로젝트 폴더의 상위 폴더에서 압축을 풀고 같은 이름의 파일을 덮어쓰세요.** `CallCenter/CallCenter/`처럼 폴더가 한 번 더 중첩되면 이전 화면이 계속 실행됩니다.
+
+이 배포 ZIP에는 `src/main/resources/application.properties`가 포함되어 있지 않습니다. 기존 프로젝트에서 설정한 DB 주소, 아이디, 비밀번호를 그대로 보존하세요. 이미 존재하는 `config/application-local.properties`도 건드리지 않습니다.
+
+적용 후 STS4에서 기존 프로그램을 **Stop**하고 프로젝트 우클릭 → **Gradle → Refresh Gradle Project**, 이어서 **Project → Clean**을 실행한 다음 Spring Boot App을 다시 시작합니다. 브라우저에서 `Ctrl+F5`로 새로고침하세요. 그래도 예전 화면이 보이면, STS4에서 실행 중인 프로젝트의 `src/main/resources/templates/mainPage.html`에 `ALF`가 있는지와 실행 설정의 프로젝트 경로가 압축을 푼 폴더인지 확인하세요.
+
 대림통상 콜센터 통계 프로그램입니다. **Java 21 / Spring Boot 3.5.16 / Gradle 8.7**을 사용하며, 내장 Tomcat이 포함된 실행 JAR로 구동합니다. 외부 Tomcat, WAR 배포, JSP 설정은 필요하지 않습니다. 기존 Thymeleaf 화면과 로그인·통계·접수 집계·엑셀 다운로드 URL을 유지합니다.
 
 ## STS4에서 가져오기 / Boot Dashboard 표시
 
 기존 저장소는 `CallCenter/` 안에 다시 Gradle 프로젝트가 들어 있었습니다. 이제 **저장소 최상위 폴더**에 `build.gradle`, `settings.gradle`, `gradlew`, `src/`가 있습니다.
 
-1. 이 ZIP을 압축 해제하거나 기존 Git 저장소의 `master`를 Pull 합니다. 기존 작업 내용이 있다면 먼저 보관합니다.
+1. 이 ZIP을 압축 해제합니다. 기존 작업 내용이 있다면 먼저 보관합니다.
 2. 이전 경로로 가져온 CallCenter 프로젝트가 STS4에 있다면 Package Explorer에서 해당 프로젝트를 **Delete** 합니다. **Delete project contents on disk는 체크하지 마세요.** 로컬 파일은 남겨둡니다.
 3. **File → Import → Gradle → Existing Gradle Project → Next**를 선택합니다.
 4. **Project root directory**에 `build.gradle`이 바로 보이는 저장소 최상위 폴더를 지정합니다. 예전 안쪽 `CallCenter` 폴더를 선택하지 않습니다.
@@ -28,7 +36,7 @@ STS4의 **Window → Preferences → Java → Installed JREs**에도 JDK 21이 �
 3. STS4 실행 설정의 Working directory는 프로젝트 최상위 폴더로 둡니다.
 
 ```properties
-spring.datasource.url=jdbc:mariadb://DB_HOST:3306/callcenter
+spring.datasource.url=jdbc:mariadb://192.168.1.12:3306/groupware9
 spring.datasource.username=DB_USER
 spring.datasource.password=DB_PASSWORD
 spring.second-datasource.url=jdbc:as400://DB2_HOST/DAELIMDB
@@ -80,6 +88,12 @@ java -jar build/libs/callcenter.jar
 접속: <http://localhost:8080/> 또는 기존 <http://localhost:8080/callCenter/>. 포트를 변경했다면 URL도 변경합니다.
 
 ## 실행 구성 정리 내용
+
+### ALF 채널 표시
+
+조회 표, 통계 등록 화면, 엑셀 다운로드 서식은 `ALF` 아래에 `음성 ALF`, `버튼 ALF`, `채팅 ALF`를 각각 인입·접수로 표시합니다. 기존 `voiceInCall`/`voiceAcptCall`, `chatInCall`/`chatAcptCall`, `chattingIn`/`chattingAcpt` 필드와 집계·접수 코드 및 데이터베이스 구조는 유지합니다. 로그인, 사용자 등록, 운영 화면의 디자인도 함께 개편했습니다.
+
+인쇄는 선택한 행(선택하지 않았다면 조회 결과 전체), 합계, 생성된 그래프를 A4 가로 한 장에 자동으로 맞춥니다. 결과가 매우 많을 때는 모든 내용을 한 장에 넣기 위해 글자가 작아집니다.
 
 - 저장소 최상위에 하나의 Gradle/Spring Boot 프로젝트를 배치하고 `CallCenterApplication`을 실행 클래스로 지정했습니다.
 - MariaDB 로그인·통계 저장소는 하나의 기본 데이터소스/트랜잭션을 공유합니다. 접수 저장소는 별도 DB2 연결을 사용합니다.

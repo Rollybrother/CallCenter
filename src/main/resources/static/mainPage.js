@@ -2,10 +2,17 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("dailyBtn").addEventListener("click", showDailyFilter);
     document.getElementById("monthlyBtn").addEventListener("click", showMonthlyFilter);
     document.getElementById("yearlyBtn").addEventListener("click", showYearlyFilter);
+
+    showDailyFilter();
 	
 	window.calculateAndRenderTotalRow = calculateAndRenderTotalRow;
 	
+    function activateTab(id) {
+        document.querySelectorAll(".tab-button").forEach(button => button.classList.toggle("active", button.id === id));
+    }
+
     function showDailyFilter() {
+        activateTab("dailyBtn");
         const filterSection = document.getElementById("filter-section");
         filterSection.innerHTML = `
             <label>시작 날짜: <input type="date" id="startDate"></label>
@@ -15,6 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 	
     function showMonthlyFilter() {
+        activateTab("monthlyBtn");
         const filterSection = document.getElementById("filter-section");
         filterSection.innerHTML = `
             <label>연도: <input type="number" id="year" placeholder="YYYY"></label>
@@ -24,6 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 	
     function showYearlyFilter() {
+        activateTab("yearlyBtn");
 	    const filterSection = document.getElementById("filter-section");
 	    filterSection.innerHTML = `
 	        <label>시작: <input type="month" id="startYearMonth"></label>
@@ -105,6 +114,10 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
 		
         tbody.insertAdjacentHTML("beforeend", summaryRow);
+        document.getElementById("overviewRows").textContent = rows.length.toLocaleString("ko-KR");
+        document.getElementById("overviewIn").textContent = totalInCall.toLocaleString("ko-KR");
+        document.getElementById("overviewResponse").textContent = totalResCall.toLocaleString("ko-KR");
+        document.getElementById("overviewReception").textContent = totalAcptCall.toLocaleString("ko-KR");
     }
 	
 	
@@ -328,15 +341,13 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("modal").classList.remove("hidden");
     });
 	
-    // 통계 등록 버튼 클릭 시 모달 표시
-    document.getElementById("registerBtn").addEventListener("click", function() {
-        document.getElementById("modal").classList.remove("hidden");
-    });
-	
-    // 모달 닫기 버튼
-    document.getElementById("closeModal").addEventListener("click", function() {
-        document.getElementById("modal").classList.add("hidden");
-    });
+    // 모달 닫기
+    const modal = document.getElementById("modal");
+    const closeModal = () => modal.classList.add("hidden");
+    document.getElementById("closeModal").addEventListener("click", closeModal);
+    document.querySelector("[data-close-modal]").addEventListener("click", closeModal);
+    modal.addEventListener("click", event => { if (event.target === modal) closeModal(); });
+    document.addEventListener("keydown", event => { if (event.key === "Escape") closeModal(); });
 
 	//등록 로직
     document.getElementById("statForm").addEventListener("submit", function(event) {

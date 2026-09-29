@@ -45,8 +45,8 @@ public class StatController {
             // 첫 번째 시트 가져오기
             Sheet sheet = workbook.getSheetAt(0);
 
-            // 데이터 삽입 시작 행 (3행, 인덱스 2)
-            int rowNum = 2;
+            // 데이터 삽입 시작 행 (4행, 인덱스 3)
+            int rowNum = 3;
 
             for (Map<String, String> rowData : tableData) {
                 // 기존 행 가져오기 (없으면 새로 생성)

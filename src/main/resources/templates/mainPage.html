@@ -3,101 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>콜센터 통계</title>
+    <title>콜센터 운영 현황 | 대림통상</title>
     <link rel="stylesheet" href="/mainPage.css">
-	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-	<script src="/js/chartjs-plugin-annotation.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script src="/js/chartjs-plugin-annotation.min.js" defer></script>
+    <script src="/mainPage.js" defer></script>
+    <script src="/mainPage2.js" defer></script>
 </head>
 <body>
-    <header>
-        <h1>콜센터 통계</h1>
-        <div class="button-group">
-            <button id="registerBtn">통계 등록</button>
-            <button id="dailyBtn">일별 조회</button>
-            <button id="monthlyBtn">월별 조회</button>
-            <button id="yearlyBtn">연별 조회</button>
+    <div class="app-shell">
+        <aside class="sidebar" aria-label="서비스 정보">
+            <a class="brand" href="/callCenter/mainPage" aria-label="대림통상 콜센터 홈">
+                <span class="brand-mark">D</span>
+                <span><strong>DAELIM</strong><small>CALL CENTER</small></span>
+            </a>
+            <div class="sidebar-caption">WORKSPACE</div>
+            <div class="sidebar-link active"><span class="nav-icon">◫</span> 운영 현황</div>
+            <div class="sidebar-spacer"></div>
+            <div class="sidebar-foot"><span class="status-dot"></span> 콜센터 통계 관리</div>
+        </aside>
+        <div class="content-shell">
+            <header class="topbar">
+                <div class="breadcrumb">콜센터 <span>/</span> 운영 현황</div>
+                <span class="topbar-label">DAELIM STATISTICS</span>
+            </header>
+            <main class="page-content">
+                <section class="page-heading">
+                    <div>
+                        <span class="eyebrow">OPERATIONS OVERVIEW</span>
+                        <h1>콜센터 운영 현황</h1>
+                        <p>상담 채널별 인입과 접수 현황을 한눈에 확인하세요.</p>
+                    </div>
+                    <button id="registerBtn" class="button button-primary" type="button"><span aria-hidden="true">＋</span> 통계 등록</button>
+                </section>
+
+                <section class="overview" aria-label="조회 결과 요약">
+                    <div class="metric"><span class="metric-label">조회 건수</span><strong id="overviewRows">0</strong><span class="metric-caption">선택한 기간의 데이터</span></div>
+                    <div class="metric"><span class="metric-label">총 인입</span><strong id="overviewIn">0</strong><span class="metric-caption">상담원 및 ALF</span></div>
+                    <div class="metric"><span class="metric-label">총 응대</span><strong id="overviewResponse">0</strong><span class="metric-caption">전체 응대 건수</span></div>
+                    <div class="metric accent"><span class="metric-label">총 접수</span><strong id="overviewReception">0</strong><span class="metric-caption">전체 채널의 접수</span></div>
+                </section>
+
+                <section class="panel query-panel" aria-label="조회 조건">
+                    <div class="section-heading"><div><span class="section-kicker">01 / SEARCH</span><h2>기간별 조회</h2></div><p>조회 단위를 선택하고 기간을 입력하세요.</p></div>
+                    <div class="button-group tabs" role="group" aria-label="조회 단위">
+                        <button id="dailyBtn" class="tab-button" type="button">일별 조회</button>
+                        <button id="monthlyBtn" class="tab-button" type="button">월별 조회</button>
+                        <button id="yearlyBtn" class="tab-button" type="button">연별 조회</button>
+                    </div>
+                    <div id="filter-section" class="filter-fields" aria-live="polite"></div>
+                </section>
+
+                <section class="panel table-panel" aria-label="통계 조회 결과">
+                    <div class="section-heading result-heading"><div><span class="section-kicker">02 / DATA</span><h2>채널별 상세 현황</h2></div><span class="hint">표에서 날짜를 선택하면 수정·삭제·그래프·인쇄에 활용할 수 있습니다.</span></div>
+                    <div id="table-actions" class="table-actions"></div>
+                    <div id="data-table" class="table-scroll" role="region" aria-label="콜센터 통계 표" tabindex="0">
+                        <table>
+                            <thead>
+                                <tr class="group-row">
+                                    <th rowspan="3" class="date-column"><label><input type="checkbox" id="selectAllCheckbox" aria-label="모든 날짜 선택"> 날짜</label></th>
+                                    <th colspan="4" rowspan="2">상담원</th>
+                                    <th colspan="6" class="alf-heading">ALF</th>
+                                    <th rowspan="3">내선 접수</th><th rowspan="3">온라인 접수</th><th rowspan="3">팩스 접수</th>
+                                    <th colspan="5" rowspan="2">합계</th>
+                                </tr>
+                                <tr class="channel-row"><th colspan="2">음성 ALF</th><th colspan="2">버튼 ALF</th><th colspan="2">채팅 ALF</th></tr>
+                                <tr class="detail-row">
+                                    <th>인입</th><th>응답</th><th>응대율</th><th>접수</th>
+                                    <th>인입</th><th>접수</th><th>인입</th><th>접수</th><th>인입</th><th>접수</th>
+                                    <th>인입</th><th>응대</th><th>응대율</th><th>접수</th><th>응대접수율</th>
+                                </tr>
+                            </thead>
+                            <tbody id="data-body"></tbody>
+                        </table>
+                    </div>
+                    <p class="table-footnote">ALF는 음성, 버튼, 채팅 세 채널로 구분해 표시합니다.</p>
+                </section>
+
+                <section id="graphContainer" class="panel graph-panel" aria-label="추이 그래프">
+                    <div class="section-heading"><div><span class="section-kicker">03 / TREND</span><h2>운영 추이</h2></div><span class="hint">행을 선택한 뒤 그래프 생성을 누르세요.</span></div>
+                    <div id="graph-plot"><canvas id="barGraph"></canvas></div>
+                </section>
+            </main>
         </div>
-    </header>
-    <main>
-        <div id="filter-section">
-            <!-- 조회 필터 입력 영역 (예: 날짜, 월, 연도 선택) -->
+    </div>
+
+    <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-content">
+            <div class="modal-header"><div><span class="section-kicker">NEW RECORD</span><h2 id="modalTitle">통계 등록</h2><p>채널별 일일 수치를 입력해 주세요.</p></div><button type="button" id="closeModal" class="icon-button" aria-label="닫기">×</button></div>
+            <form id="statForm">
+                <div class="modal-body">
+                    <div class="date-fetch"><label for="date">기준 날짜<input type="date" id="date" name="date" required></label><button type="button" id="fetchReceptionBtn" class="button button-outline">접수 데이터 조회</button></div>
+                    <fieldset><legend>상담원</legend><div class="field-grid four"><label for="manInCall">인입<input type="number" min="0" id="manInCall" name="manInCall" required></label><label for="manResCall">응답<input type="number" min="0" id="manResCall" name="manResCall" required></label><label for="manAcptCall">접수<input type="number" min="0" id="manAcptCall" name="manAcptCall" required></label></div></fieldset>
+                    <fieldset class="alf-fieldset"><legend>ALF <span>채널별 입력</span></legend><div class="alf-grid">
+                        <div class="channel-fields"><h3>음성 ALF</h3><label for="voiceInCall">인입<input type="number" min="0" id="voiceInCall" name="voiceInCall" required></label><label for="voiceAcptCall">접수<input type="number" min="0" id="voiceAcptCall" name="voiceAcptCall" required></label></div>
+                        <div class="channel-fields"><h3>버튼 ALF</h3><label for="chatInCall">인입<input type="number" min="0" id="chatInCall" name="chatInCall" required></label><label for="chatAcptCall">접수<input type="number" min="0" id="chatAcptCall" name="chatAcptCall" required></label></div>
+                        <div class="channel-fields"><h3>채팅 ALF</h3><label for="chattingIn">인입<input type="number" min="0" id="chattingIn" name="chattingIn" required></label><label for="chattingAcpt">접수<input type="number" min="0" id="chattingAcpt" name="chattingAcpt" required></label></div>
+                    </div></fieldset>
+                    <fieldset><legend>기타 접수</legend><div class="field-grid"><label for="innerAcpt">내선 접수<input type="number" min="0" id="innerAcpt" name="innerAcpt" required></label><label for="onlineAcptCall">온라인 접수<input type="number" min="0" id="onlineAcptCall" name="onlineAcptCall" required></label><label for="faxAcpt">팩스 접수<input type="number" min="0" id="faxAcpt" name="faxAcpt" required></label></div></fieldset>
+                </div>
+                <div class="modal-footer"><button type="button" class="button button-outline" data-close-modal>취소</button><button type="submit" class="button button-primary">통계 저장</button></div>
+            </form>
         </div>
-        <div id="data-table">
-            <table>
-                <thead>
-                    <tr>
-						<th rowspan="2">
-						    <input type="checkbox" id="selectAllCheckbox"> 날짜
-						</th>
-                        <th colspan="4">상담원</th>
-                        <th colspan="2">보이스봇</th>
-                        <th colspan="2">챗봇</th>
-						<th colspan="2">채팅</th>
-						<th rowspan="2">내선 접수</th>
-                        <th rowspan="2">온라인 접수</th>
-						<th rowspan="2">팩스 접수</th>
-                        <th colspan="5">합계</th>
-                    </tr>
-                    <tr>
-                        <!-- 세부 헤더 -->
-                        <th>인입</th>
-                        <th>응답</th>
-                        <th>응대율</th>
-                        <th>접수</th>
-                        <th>인입</th>
-                        <th>접수</th>
-                        <th>인입</th>
-                        <th>접수</th>
-						<th>인입</th>
-                        <th>접수</th>
-                        <th>인입</th>
-                        <th>응대</th>
-                        <th>응대율</th>
-                        <th>접수</th>
-                        <th>응대접수율</th>
-                    </tr>
-                </thead>
-                <tbody id="data-body">
-                    <!-- 조회된 데이터가 여기에 추가됩니다 -->
-                </tbody>
-            </table>
-        </div>
-		
-		<!-- 그래프 표시 영역 -->
-		<div id="graphContainer" style="margin-top: 20px;">
-		    <canvas id="barGraph" style="height: 8cm;"></canvas> 
-		</div>
-		
-    </main>
-	
-	<!-- 모달 창 -->
-	<div id="modal" class="modal hidden">
-	    <div class="modal-content">
-	        <h2>통계 등록</h2>
-	        <form id="statForm">
-	            <label>날짜: <input type="date" id="date" name="date" required></label>
-	            <!-- 접수 데이터 조회 버튼 추가 -->
-	            <button type="button" id="fetchReceptionBtn">접수 데이터 조회</button>
-	            <label>상담원 인입: <input type="number" id="manInCall" name="manInCall" required></label>
-	            <label>상담원 응답: <input type="number" id="manResCall" name="manResCall" required></label>
-	            <label>상담원 접수: <input type="number" id="manAcptCall" name="manAcptCall" required></label>
-	            <label>보이스봇 인입: <input type="number" id="voiceInCall" name="voiceInCall" required></label>
-	            <label>보이스봇 접수: <input type="number" id="voiceAcptCall" name="voiceAcptCall" required></label>
-	            <label>챗봇 인입: <input type="number" id="chatInCall" name="chatInCall" required></label>
-	            <label>챗봇 접수: <input type="number" id="chatAcptCall" name="chatAcptCall" required></label>
-				<label>채팅 인입: <input type="number" id="chattingIn" name="chattingIn" required></label>
-				<label>채팅 접수: <input type="number" id="chattingAcpt" name="chattingAcpt" required></label>
-				<label>내선 접수: <input type="number" id="innerAcpt" name="innerAcpt" required></label>
-	            <label>온라인 접수: <input type="number" id="onlineAcptCall" name="onlineAcptCall" required></label>
-				<label>팩스 접수: <input type="number" id="faxAcpt" name="faxAcpt" required></label>
-				<button type="submit">저장</button>
-	            <button type="button" id="closeModal">닫기</button>
-	        </form>
-	    </div>
-	</div>
-	
-    <script src="/mainPage.js"></script>
-	<script src="/mainPage2.js"></script>
-	
+    </div>
 </body>
 </html>
